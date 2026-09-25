@@ -1,0 +1,472 @@
+[
+  {
+    "id": "builtin:21_Nombres_de_Dios.dctx",
+    "filename": "21_Nombres_de_Dios.dctx",
+    "kind": "dictionary",
+    "title": "21 Nombres de Dios",
+    "abbreviation": "21N.deD.",
+    "builtin": true,
+    "url": "/modules/21_Nombres_de_Dios.dctx",
+    "version": "115712-1480963470000"
+  },
+  {
+    "id": "builtin:AH-NT Atlas Historico del Nuevo Testamento.mapx",
+    "filename": "AH-NT Atlas Historico del Nuevo Testamento.mapx",
+    "kind": "map",
+    "title": "Atlas Historico del Nuevo Testamento",
+    "abbreviation": "AH-NT",
+    "builtin": true,
+    "url": "/modules/AH-NT%20Atlas%20Historico%20del%20Nuevo%20Testamento.mapx",
+    "version": "3828736-1345083996664"
+  },
+  {
+    "id": "builtin:BNP Mapas de la Biblia de Nuestro Pueblo.mapx",
+    "filename": "BNP Mapas de la Biblia de Nuestro Pueblo.mapx",
+    "kind": "map",
+    "title": "Mapas de la Biblia de Nuestro Pueblo",
+    "abbreviation": "BNP",
+    "builtin": true,
+    "url": "/modules/BNP%20Mapas%20de%20la%20Biblia%20de%20Nuestro%20Pueblo.mapx",
+    "version": "571392-1311965438265"
+  },
+  {
+    "id": "builtin:BOSQEXP-wiersbe_-_bosquejos_expositivos_de_la_biblia_warren_w_wiersbe.cmtx",
+    "filename": "BOSQEXP-wiersbe_-_bosquejos_expositivos_de_la_biblia_warren_w_wiersbe.cmtx",
+    "kind": "commentary",
+    "title": "Bosquejos expositivos de la Biblia - Warren W. Wiersbe",
+    "abbreviation": "BOSQEXP-WIERSBE",
+    "builtin": true,
+    "url": "/modules/BOSQEXP-wiersbe_-_bosquejos_expositivos_de_la_biblia_warren_w_wiersbe.cmtx",
+    "version": "8817664-1485118047804"
+  },
+  {
+    "id": "builtin:Certeza.dctx",
+    "filename": "Certeza.dctx",
+    "kind": "dictionary",
+    "title": "Nuevo Diccionario Bíblico Certeza",
+    "abbreviation": "Certeza",
+    "builtin": true,
+    "url": "/modules/Certeza.dctx",
+    "version": "20415488-1480966602000"
+  },
+  {
+    "id": "builtin:Chávez Diccionario de Hebreo Bíblico.dctx",
+    "filename": "Chávez Diccionario de Hebreo Bíblico.dctx",
+    "kind": "dictionary",
+    "title": "Diccionario de Hebreo Bíblico - Moisés Chávez",
+    "abbreviation": "Chávez",
+    "builtin": true,
+    "url": "/modules/Ch%C3%A1vez%20Diccionario%20de%20Hebreo%20B%C3%ADblico.dctx",
+    "version": "3702784-1342563015218"
+  },
+  {
+    "id": "builtin:Comentario Biblia Diario Vivir.cmtx",
+    "filename": "Comentario Biblia Diario Vivir.cmtx",
+    "kind": "commentary",
+    "title": "Comentarios de la Biblia del Diario Vivir",
+    "abbreviation": "Diario Vivir",
+    "builtin": true,
+    "url": "/modules/Comentario%20Biblia%20Diario%20Vivir.cmtx",
+    "version": "6422528-1480965176000"
+  },
+  {
+    "id": "builtin:Comentario Biblia Plenitud.cmtx",
+    "filename": "Comentario Biblia Plenitud.cmtx",
+    "kind": "commentary",
+    "title": "Comentarios de la Biblia Plenitud",
+    "abbreviation": "Plenitud",
+    "builtin": true,
+    "url": "/modules/Comentario%20Biblia%20Plenitud.cmtx",
+    "version": "4405248-1480965252000"
+  },
+  {
+    "id": "builtin:Comentario Bíblico Mundo Hispano.cmtx",
+    "filename": "Comentario Bíblico Mundo Hispano.cmtx",
+    "kind": "commentary",
+    "title": "Comentario Bíblico Mundo Hispano",
+    "abbreviation": "Mundo Hispano",
+    "builtin": true,
+    "url": "/modules/Comentario%20B%C3%ADblico%20Mundo%20Hispano.cmtx",
+    "version": "13829120-1480965494000"
+  },
+  {
+    "id": "builtin:Comentario del Nuevo Testamento de William Barclay.cmtx",
+    "filename": "Comentario del Nuevo Testamento de William Barclay.cmtx",
+    "kind": "commentary",
+    "title": "Comentario del Nuevo Testamento de William Barclay",
+    "abbreviation": "NT Barclay",
+    "builtin": true,
+    "url": "/modules/Comentario%20del%20Nuevo%20Testamento%20de%20William%20Barclay.cmtx",
+    "version": "12030976-1480965714000"
+  },
+  {
+    "id": "builtin:Cometario Bíblico de Mathew Henry.cmtx",
+    "filename": "Cometario Bíblico de Mathew Henry.cmtx",
+    "kind": "commentary",
+    "title": "Comentario de la Biblia de Matthew Henry",
+    "abbreviation": "Henry",
+    "builtin": true,
+    "url": "/modules/Cometario%20B%C3%ADblico%20de%20Mathew%20Henry.cmtx",
+    "version": "9689088-1480965880000"
+  },
+  {
+    "id": "builtin:Concordancia de las Sagradas Escrituras Versión Reina Valera 1960.dctx",
+    "filename": "Concordancia de las Sagradas Escrituras Versión Reina Valera 1960.dctx",
+    "kind": "dictionary",
+    "title": "Concordancia de las Sagradas Escrituras RV 1960",
+    "abbreviation": "Concordancia",
+    "builtin": true,
+    "url": "/modules/Concordancia%20de%20las%20Sagradas%20Escrituras%20Versi%C3%B3n%20Reina%20Valera%201960.dctx",
+    "version": "2968576-1480966652000"
+  },
+  {
+    "id": "builtin:DHH.bblx",
+    "filename": "DHH.bblx",
+    "kind": "bible",
+    "title": "La Santa Biblia Dios Habla Hoy (1996)",
+    "abbreviation": "DHH",
+    "builtin": true,
+    "url": "/modules/DHH.bblx",
+    "version": "11327488-1480969104000"
+  },
+  {
+    "id": "builtin:DHH.cmtx",
+    "filename": "DHH.cmtx",
+    "kind": "commentary",
+    "title": "La Santa Biblia Dios Habla Hoy Notes (1996)",
+    "abbreviation": "DHH",
+    "builtin": true,
+    "url": "/modules/DHH.cmtx",
+    "version": "3537920-1480965940000"
+  },
+  {
+    "id": "builtin:Diccionario Bíblico Arqueológico.dctx",
+    "filename": "Diccionario Bíblico Arqueológico.dctx",
+    "kind": "dictionary",
+    "title": "Diccionario Bíblico Arqueológico",
+    "abbreviation": "Arqueológico",
+    "builtin": true,
+    "url": "/modules/Diccionario%20B%C3%ADblico%20Arqueol%C3%B3gico.dctx",
+    "version": "4643840-1480966732000"
+  },
+  {
+    "id": "builtin:Diccionario Bíblico La Palabra.dctx",
+    "filename": "Diccionario Bíblico La Palabra.dctx",
+    "kind": "dictionary",
+    "title": "Diccionario Bíblico La Palabra",
+    "abbreviation": "La Palabra",
+    "builtin": true,
+    "url": "/modules/Diccionario%20B%C3%ADblico%20La%20Palabra.dctx",
+    "version": "316416-1480963484000"
+  },
+  {
+    "id": "builtin:Diccionario Bíblico Nelson.dctx",
+    "filename": "Diccionario Bíblico Nelson.dctx",
+    "kind": "dictionary",
+    "title": "Nuevo Diccionario Ilustrado de la Biblia",
+    "abbreviation": "Wilton M. Nelson",
+    "builtin": true,
+    "url": "/modules/Diccionario%20B%C3%ADblico%20Nelson.dctx",
+    "version": "8256512-1480966870000"
+  },
+  {
+    "id": "builtin:Diccionario de Anécdotas e Ilustraciones.dctx",
+    "filename": "Diccionario de Anécdotas e Ilustraciones.dctx",
+    "kind": "dictionary",
+    "title": "Diccionario de Anécdotas e Ilustraciones",
+    "abbreviation": "Anécdotas",
+    "builtin": true,
+    "url": "/modules/Diccionario%20de%20An%C3%A9cdotas%20e%20Ilustraciones.dctx",
+    "version": "1916928-1480966904000"
+  },
+  {
+    "id": "builtin:Diccionario de Nombres Bíblicos Hitchcock.dctx",
+    "filename": "Diccionario de Nombres Bíblicos Hitchcock.dctx",
+    "kind": "dictionary",
+    "title": "Diccionario de Nombres Biblicos Hitchcock",
+    "abbreviation": "Dic. Hitchcock",
+    "builtin": true,
+    "url": "/modules/Diccionario%20de%20Nombres%20B%C3%ADblicos%20Hitchcock.dctx",
+    "version": "186368-1480963490000"
+  },
+  {
+    "id": "builtin:Diccionario de Religiones, denominaciones y sectas.dctx",
+    "filename": "Diccionario de Religiones, denominaciones y sectas.dctx",
+    "kind": "dictionary",
+    "title": "Diccionario de Religiones, Denominaciones y Sectas",
+    "abbreviation": "Religiones",
+    "builtin": true,
+    "url": "/modules/Diccionario%20de%20Religiones%2C%20denominaciones%20y%20sectas.dctx",
+    "version": "1205248-1480966924000"
+  },
+  {
+    "id": "builtin:Dicionario de Geografía Biblica por H. Martens.dctx",
+    "filename": "Dicionario de Geografía Biblica por H. Martens.dctx",
+    "kind": "dictionary",
+    "title": "Dicionario de Geografía Biblica por H. Martens",
+    "abbreviation": "Martens",
+    "builtin": true,
+    "url": "/modules/Dicionario%20de%20Geograf%C3%ADa%20Biblica%20por%20H.%20Martens.dctx",
+    "version": "419840-1480963506000"
+  },
+  {
+    "id": "builtin:Enlow Glosario de Nombres Bíblicos de Jack Enlow.dctx",
+    "filename": "Enlow Glosario de Nombres Bíblicos de Jack Enlow.dctx",
+    "kind": "dictionary",
+    "title": "Glosario de Nombres Bíblicos de Jack Enlow",
+    "abbreviation": "Enlow",
+    "builtin": true,
+    "url": "/modules/Enlow%20Glosario%20de%20Nombres%20B%C3%ADblicos%20de%20Jack%20Enlow.dctx",
+    "version": "350208-1480963520000"
+  },
+  {
+    "id": "builtin:Hombres y Movimientos en la Iglesia Primitiva.refx",
+    "filename": "Hombres y Movimientos en la Iglesia Primitiva.refx",
+    "kind": "reference",
+    "title": "Hombres y Movimientos en la Iglesia Primitiva.refx",
+    "abbreviation": "",
+    "builtin": true,
+    "url": "/modules/Hombres%20y%20Movimientos%20en%20la%20Iglesia%20Primitiva.refx",
+    "version": "209920-1480963624000"
+  },
+  {
+    "id": "builtin:La Geografía Bíblica J. B. Tidwell _ Carlos C. Pierson.dctx",
+    "filename": "La Geografía Bíblica J. B. Tidwell _ Carlos C. Pierson.dctx",
+    "kind": "dictionary",
+    "title": "Geografía Bíblica de Tidwell y Pierson",
+    "abbreviation": "Tidwell y Pierson",
+    "builtin": true,
+    "url": "/modules/La%20Geograf%C3%ADa%20B%C3%ADblica%20J.%20B.%20Tidwell%20_%20Carlos%20C.%20Pierson.dctx",
+    "version": "849920-1480963558000"
+  },
+  {
+    "id": "builtin:MapBib Mapas de la Biblia.mapx",
+    "filename": "MapBib Mapas de la Biblia.mapx",
+    "kind": "map",
+    "title": "Mapas de la Biblia",
+    "abbreviation": "MapBib",
+    "builtin": true,
+    "url": "/modules/MapBib%20Mapas%20de%20la%20Biblia.mapx",
+    "version": "2016256-1345127526818"
+  },
+  {
+    "id": "builtin:Mujeres de la Biblia.dctx",
+    "filename": "Mujeres de la Biblia.dctx",
+    "kind": "dictionary",
+    "title": "Biografías de Mujeres de la Biblia",
+    "abbreviation": "Mujeres de la Biblia",
+    "builtin": true,
+    "url": "/modules/Mujeres%20de%20la%20Biblia.dctx",
+    "version": "539648-1480963578000"
+  },
+  {
+    "id": "builtin:NBE Nueva Biblia Española.mapx",
+    "filename": "NBE Nueva Biblia Española.mapx",
+    "kind": "map",
+    "title": "Mapas de la Nueva Biblia Espa�ola",
+    "abbreviation": "NBE",
+    "builtin": true,
+    "url": "/modules/NBE%20Nueva%20Biblia%20Espa%C3%B1ola.mapx",
+    "version": "2615296-1372887622506"
+  },
+  {
+    "id": "builtin:NBLH Nueva Biblia de los Hispanos.bblx",
+    "filename": "NBLH Nueva Biblia de los Hispanos.bblx",
+    "kind": "bible",
+    "title": "La Nueva Biblia de los Hispanos (2005)",
+    "abbreviation": "NBLH",
+    "builtin": true,
+    "url": "/modules/NBLH%20Nueva%20Biblia%20de%20los%20Hispanos.bblx",
+    "version": "11090944-1480963954000"
+  },
+  {
+    "id": "builtin:NBLH Nueva Biblia de los Hispanos.cmtx",
+    "filename": "NBLH Nueva Biblia de los Hispanos.cmtx",
+    "kind": "commentary",
+    "title": "Notas - La Nueva Biblia de los Hispanos",
+    "abbreviation": "NBLH",
+    "builtin": true,
+    "url": "/modules/NBLH%20Nueva%20Biblia%20de%20los%20Hispanos.cmtx",
+    "version": "8436736-1480966118000"
+  },
+  {
+    "id": "builtin:NCSE Nueva Concordancia Strong Exhaustiva.dctx",
+    "filename": "NCSE Nueva Concordancia Strong Exhaustiva.dctx",
+    "kind": "dictionary",
+    "title": "Nueva Concordancia Strong Exhaustiva",
+    "abbreviation": "NCSE",
+    "builtin": true,
+    "url": "/modules/NCSE%20Nueva%20Concordancia%20Strong%20Exhaustiva.dctx",
+    "version": "28409856-1480967406000"
+  },
+  {
+    "id": "builtin:NTV Nueva Traducción Viviente.bblx",
+    "filename": "NTV Nueva Traducción Viviente.bblx",
+    "kind": "bible",
+    "title": "Nueva Traducción Viviente",
+    "abbreviation": "NTV",
+    "builtin": true,
+    "url": "/modules/NTV%20Nueva%20Traducci%C3%B3n%20Viviente.bblx",
+    "version": "5472256-1480964048000"
+  },
+  {
+    "id": "builtin:NTV Nueva Traducción Viviente.cmtx",
+    "filename": "NTV Nueva Traducción Viviente.cmtx",
+    "kind": "commentary",
+    "title": "Nueva Traducción Viviente",
+    "abbreviation": "NTV",
+    "builtin": true,
+    "url": "/modules/NTV%20Nueva%20Traducci%C3%B3n%20Viviente.cmtx",
+    "version": "753664-1480963446000"
+  },
+  {
+    "id": "builtin:NVI Comentarios.cmtx",
+    "filename": "NVI Comentarios.cmtx",
+    "kind": "commentary",
+    "title": "La Santa Biblia Nueva Versión Internacional Notes",
+    "abbreviation": "NVI",
+    "builtin": true,
+    "url": "/modules/NVI%20Comentarios.cmtx",
+    "version": "412672-1480963460000"
+  },
+  {
+    "id": "builtin:NVI.bblx",
+    "filename": "NVI.bblx",
+    "kind": "bible",
+    "title": "NVI",
+    "abbreviation": "NVI",
+    "builtin": true,
+    "url": "/modules/NVI.bblx",
+    "version": "11110400-1480964240000"
+  },
+  {
+    "id": "builtin:RV1960+.bblx",
+    "filename": "RV1960+.bblx",
+    "kind": "bible",
+    "title": "La Santa Biblia Reina-Valera (1960) con números Strong",
+    "abbreviation": "RV60+",
+    "builtin": true,
+    "url": "/modules/RV1960%2B.bblx",
+    "version": "37510144-1480965066000"
+  },
+  {
+    "id": "builtin:RV1960.bblx",
+    "filename": "RV1960.bblx",
+    "kind": "bible",
+    "title": "La Santa Biblia Reina-Valera (1960)",
+    "abbreviation": "RV60",
+    "builtin": true,
+    "url": "/modules/RV1960.bblx",
+    "version": "10718208-1480964426000"
+  },
+  {
+    "id": "builtin:Sermones de Spurgeon 1.refx",
+    "filename": "Sermones de Spurgeon 1.refx",
+    "kind": "reference",
+    "title": "Sermones de Spurgeon 1.refx",
+    "abbreviation": "",
+    "builtin": true,
+    "url": "/modules/Sermones%20de%20Spurgeon%201.refx",
+    "version": "1761280-1480968696000"
+  },
+  {
+    "id": "builtin:Strong (Esp) Diccionario Strong en Español.dctx",
+    "filename": "Strong (Esp) Diccionario Strong en Español.dctx",
+    "kind": "dictionary",
+    "title": "Diccionario Strong en español",
+    "abbreviation": "Strong (Esp)",
+    "builtin": true,
+    "url": "/modules/Strong%20(Esp)%20Diccionario%20Strong%20en%20Espa%C3%B1ol.dctx",
+    "version": "3407872-1342562989859"
+  },
+  {
+    "id": "builtin:Tuggy Léxico Griego de Tuggy.dctx",
+    "filename": "Tuggy Léxico Griego de Tuggy.dctx",
+    "kind": "dictionary",
+    "title": "Léxico griego-español del NT - Alfred E. Tuggy",
+    "abbreviation": "Tuggy",
+    "builtin": true,
+    "url": "/modules/Tuggy%20L%C3%A9xico%20Griego%20de%20Tuggy.dctx",
+    "version": "24903680-1329323771239"
+  },
+  {
+    "id": "builtin:Usos y Costumbres de las Tierras Bíblicas.refx",
+    "filename": "Usos y Costumbres de las Tierras Bíblicas.refx",
+    "kind": "reference",
+    "title": "Usos y Costumbres de las Tierras Bíblicas.refx",
+    "abbreviation": "",
+    "builtin": true,
+    "url": "/modules/Usos%20y%20Costumbres%20de%20las%20Tierras%20B%C3%ADblicas.refx",
+    "version": "11832320-1480968908000"
+  },
+  {
+    "id": "builtin:Usos y costumbres.mapx",
+    "filename": "Usos y costumbres.mapx",
+    "kind": "map",
+    "title": "Usos y costumbres de las tierras bíblicas",
+    "abbreviation": "Usos y costumbres de las tierras bíblicas",
+    "builtin": true,
+    "url": "/modules/Usos%20y%20costumbres.mapx",
+    "version": "15200256-1480968658000"
+  },
+  {
+    "id": "builtin:VOLPI Encliclopedia de Obras de Filosofía.dctx",
+    "filename": "VOLPI Encliclopedia de Obras de Filosofía.dctx",
+    "kind": "dictionary",
+    "title": "VOLPI Franco, Encliclopedia de Obras de Filosofía",
+    "abbreviation": "VOLPI",
+    "builtin": true,
+    "url": "/modules/VOLPI%20Encliclopedia%20de%20Obras%20de%20Filosof%C3%ADa.dctx",
+    "version": "19710976-1448848724098"
+  },
+  {
+    "id": "builtin:VineAT+.dctx",
+    "filename": "VineAT+.dctx",
+    "kind": "dictionary",
+    "title": "Diccionario Antiguo Testamento - W. E. VINE",
+    "abbreviation": "Vine AT+",
+    "builtin": true,
+    "url": "/modules/VineAT%2B.dctx",
+    "version": "7814144-1480967704000"
+  },
+  {
+    "id": "builtin:VineNT+.dctx",
+    "filename": "VineNT+.dctx",
+    "kind": "dictionary",
+    "title": "Diccionario Nuevo Testamento - W. E. VINE",
+    "abbreviation": "Vine NT+",
+    "builtin": true,
+    "url": "/modules/VineNT%2B.dctx",
+    "version": "24025088-1480968114000"
+  },
+  {
+    "id": "builtin:Vocabulario de Teología Bíblica.dctx",
+    "filename": "Vocabulario de Teología Bíblica.dctx",
+    "kind": "dictionary",
+    "title": "Vocabulario de Teología Bíblica - LEON-DUFOUR, X.",
+    "abbreviation": "VocTB",
+    "builtin": true,
+    "url": "/modules/Vocabulario%20de%20Teolog%C3%ADa%20B%C3%ADblica.dctx",
+    "version": "5226496-1480968208000"
+  },
+  {
+    "id": "builtin:crockett.harx",
+    "filename": "crockett.harx",
+    "kind": "harmony",
+    "title": "The Books of the Kings of Judah and Israel",
+    "abbreviation": "Crockett",
+    "builtin": true,
+    "url": "/modules/crockett.harx",
+    "version": "70656-1292619600000"
+  },
+  {
+    "id": "builtin:robertson.harx",
+    "filename": "robertson.harx",
+    "kind": "harmony",
+    "title": "A Harmony of the Gospels",
+    "abbreviation": "Robertson",
+    "builtin": true,
+    "url": "/modules/robertson.harx",
+    "version": "63488-1761944400000"
+  }
+]

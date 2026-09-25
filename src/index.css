@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+html,
+body,
+#root {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+html {
+  color-scheme: dark;
+}
+
+/* Modo claro: se redefine la paleta que usan los componentes (tono papel cálido). */
+html.light {
+  color-scheme: light;
+  --color-zinc-950: #f4f1ea;
+  --color-zinc-900: #fffdf8;
+  --color-zinc-800: #efeadf;
+  --color-zinc-700: #e2dccd;
+  --color-zinc-500: #7a7466;
+  --color-zinc-300: #4a4538;
+  --color-zinc-200: #2b2820;
+  --color-white: #1c1a15;
+  --color-red-400: #b91c1c;
+  --color-sky-400: #0b6e99;
+  --color-sky-600: #86c5e2;
+  --color-sky-700: #9fd3ea;
+  --color-sky-900: #bfe0f0;
+}
