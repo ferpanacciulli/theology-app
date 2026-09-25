@@ -3,13 +3,13 @@ import BibleView from "./BibleView";
 import CommentaryPanel from "./CommentaryPanel";
 import ModuleView from "./ModuleView";
 import SearchView from "./SearchView";
-import { model } from "./layoutModel";
+import { model, persistModel } from "./layoutModel";
 
 function factory(node: FlexLayout.TabNode) {
   const component = node.getComponent();
 
-  if (component === "bible") return <BibleView />;
-  if (component === "commentary") return <CommentaryPanel />;
+  if (component === "bible") return <BibleView node={node} />;
+  if (component === "commentary") return <CommentaryPanel node={node} />;
   if (component === "search") return <SearchView />;
   if (component === "module") {
     return <ModuleView moduleId={node.getConfig()?.moduleId as string} />;
@@ -27,7 +27,7 @@ function factory(node: FlexLayout.TabNode) {
 function Workspace() {
   return (
     <div className="h-full w-full relative">
-      <FlexLayout.Layout model={model} factory={factory} />
+      <FlexLayout.Layout model={model} factory={factory} onModelChange={persistModel} />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import * as FlexLayout from "flexlayout-react";
 import { books } from "../bible/books";
 import { chaptersByBook } from "../bible/chapters";
 import { parseReference } from "../bible/parser";
@@ -37,10 +38,29 @@ function loadBible(): Promise<Index> {
   return cache;
 }
 
-function BibleView({ moduleId }: { moduleId?: string }) {
-  const { book, chapter, verse, modules, setReference, setLookup } = useStudyStore();
+function BibleView({ moduleId, node }: { moduleId?: string; node?: FlexLayout.TabNode }) {
+  const { book, chapter, verse, modules, bibleSource, setReference, setLookup, setBibleSource } =
+    useStudyStore();
   const bibles = modules.filter((m) => m.kind === "bible");
-  const [source, setSource] = useState(moduleId ?? "");
+  // Pestaña de un módulo abierto directamente: fija. Pestaña principal (con `node`): recuerda
+  // la última versión elegida ahí. Sin ninguna de las dos (celular): recuerda la última global.
+  const initialSource = moduleId ?? (node ? node.getConfig()?.source : undefined) ?? bibleSource;
+  const [source, setSourceState] = useState<string>(initialSource);
+
+  function setSource(id: string) {
+    setSourceState(id);
+    if (node) {
+      try {
+        node
+          .getModel()
+          .doAction(FlexLayout.Actions.updateNodeAttributes(node.getId(), { config: { source: id } }));
+      } catch {
+        /* no debería fallar, pero no es crítico si lo hace */
+      }
+    } else if (!moduleId) {
+      setBibleSource(id);
+    }
+  }
   const { db, error } = useModuleDb(source || undefined);
   const encrypted = useMemo(() => (db ? isEncrypted(db) : false), [db]);
   const [index, setIndex] = useState<Index | null>(null);
@@ -171,7 +191,7 @@ function BibleView({ moduleId }: { moduleId?: string }) {
             }`}
           >
             <sup className="font-sans text-xs font-bold text-sky-400 mr-1.5">{v.Verse}</sup>
-            {source ? renderMarkup(v.Scripture, setLookup) : v.Scripture}
+            {renderMarkup(v.Scripture, setLookup)}
           </p>
         ))}
       </div>

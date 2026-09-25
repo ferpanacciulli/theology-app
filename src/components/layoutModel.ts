@@ -1,7 +1,8 @@
 import * as FlexLayout from "flexlayout-react";
 import type { ModuleMeta } from "../modules/types";
+import { loadJSON, saveJSON } from "../store/localPersist";
 
-const json = {
+const defaultJson = {
   global: {},
   borders: [],
   layout: {
@@ -35,7 +36,24 @@ const json = {
   },
 };
 
-export const model = FlexLayout.Model.fromJson(json);
+// Se restaura la disposición de paneles y las pestañas abiertas de la última visita.
+function loadModel(): FlexLayout.Model {
+  const savedJson = loadJSON<typeof defaultJson | null>("layout", null);
+  if (savedJson) {
+    try {
+      return FlexLayout.Model.fromJson(savedJson);
+    } catch {
+      /* la disposición guardada quedó inválida (versión anterior, etc.) */
+    }
+  }
+  return FlexLayout.Model.fromJson(defaultJson);
+}
+
+export const model = loadModel();
+
+export function persistModel(m: FlexLayout.Model) {
+  saveJSON("layout", m.toJson());
+}
 
 /** Abre un módulo importado en una pestaña nueva (Biblias a la izquierda, el resto a la derecha). */
 export function openModuleTab(m: ModuleMeta) {

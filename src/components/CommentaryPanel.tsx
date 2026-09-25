@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import * as FlexLayout from "flexlayout-react";
 import { useStudyStore } from "../store/useStudyStore";
 import { useModuleDb } from "../modules/useModuleDb";
 import { getComments, isEncrypted } from "../modules/esword/reader";
@@ -8,11 +9,27 @@ import { books } from "../bible/books";
 import Diagnostics from "./Diagnostics";
 import EncryptedNotice from "./EncryptedNotice";
 
-function CommentaryPanel({ moduleId }: { moduleId?: string }) {
-  const { book, chapter, verse, modules } = useStudyStore();
+function CommentaryPanel({ moduleId, node }: { moduleId?: string; node?: FlexLayout.TabNode }) {
+  const { book, chapter, verse, modules, commentarySource, setCommentarySource } = useStudyStore();
   const commentaries = modules.filter((m) => m.kind === "commentary");
-  const [selected, setSelected] = useState("");
+  const initialSelected = (node ? node.getConfig()?.source : undefined) ?? commentarySource;
+  const [selected, setSelectedState] = useState<string>(initialSelected);
   const activeId = moduleId || selected || commentaries[0]?.id || "";
+
+  function setSelected(id: string) {
+    setSelectedState(id);
+    if (node) {
+      try {
+        node
+          .getModel()
+          .doAction(FlexLayout.Actions.updateNodeAttributes(node.getId(), { config: { source: id } }));
+      } catch {
+        /* no debería fallar, pero no es crítico si lo hace */
+      }
+    } else {
+      setCommentarySource(id);
+    }
+  }
   const { db, error } = useModuleDb(activeId || undefined);
   const encrypted = useMemo(() => (db ? isEncrypted(db) : false), [db]);
 
