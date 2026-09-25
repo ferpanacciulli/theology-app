@@ -1,6 +1,7 @@
 import * as FlexLayout from "flexlayout-react";
 import type { ModuleMeta } from "../modules/types";
 import { loadJSON, saveJSON } from "../store/localPersist";
+import { scheduleSync } from "../lib/sync";
 
 const defaultJson = {
   global: {},
@@ -53,6 +54,7 @@ export const model = loadModel();
 
 export function persistModel(m: FlexLayout.Model) {
   saveJSON("layout", m.toJson());
+  scheduleSync();
 }
 
 /** Abre un módulo importado en una pestaña nueva (Biblias a la izquierda, el resto a la derecha). */

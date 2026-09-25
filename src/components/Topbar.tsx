@@ -3,6 +3,7 @@ import { applyTheme, getInitialTheme } from "../theme";
 import type { Theme } from "../theme";
 import { useStudyStore } from "../store/useStudyStore";
 import { showTab } from "./layoutModel";
+import AuthPanel from "./AuthPanel";
 
 interface InstallEvent extends Event {
   prompt: () => Promise<void>;
@@ -59,6 +60,7 @@ function Topbar() {
           {theme === "dark" ? "☀️" : "🌙"}
           <span className="hidden md:inline">{theme === "dark" ? " Claro" : " Oscuro"}</span>
         </button>
+        <AuthPanel />
       </div>
     </div>
   );

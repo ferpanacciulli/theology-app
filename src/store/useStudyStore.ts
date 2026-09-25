@@ -1,10 +1,11 @@
 import { create } from "zustand";
 import type { ModuleMeta } from "../modules/types";
 import { loadJSON, saveJSON } from "./localPersist";
+import { scheduleSync } from "../lib/sync";
 
 export type MobileTab = "bible" | "search" | "commentary" | "library" | "notes" | "module";
 
-interface SavedPosition {
+export interface SavedPosition {
   book: number;
   chapter: number;
   verse: number;
@@ -43,10 +44,12 @@ interface StudyState {
   setBibleSource: (id: string) => void;
   setCommentarySource: (id: string) => void;
   focusSearch: () => void;
+  /** Aplica una posición traída de otro dispositivo (Supabase), sin volver a subirla. */
+  applyRemote: (p: Partial<SavedPosition>) => void;
 }
 
 export const useStudyStore = create<StudyState>((set, get) => {
-  function persist() {
+  function persist(sync = true) {
     const s = get();
     saveJSON("position", {
       book: s.book,
@@ -57,6 +60,7 @@ export const useStudyStore = create<StudyState>((set, get) => {
       bibleSource: s.bibleSource,
       commentarySource: s.commentarySource,
     });
+    if (sync) scheduleSync();
   }
 
   return {
@@ -89,5 +93,17 @@ export const useStudyStore = create<StudyState>((set, get) => {
       persist();
     },
     focusSearch: () => set((s) => ({ searchFocus: s.searchFocus + 1 })),
+    applyRemote: (p) => {
+      set({
+        book: p.book ?? get().book,
+        chapter: p.chapter ?? get().chapter,
+        verse: p.verse ?? get().verse,
+        mobileTab: p.mobileTab ?? get().mobileTab,
+        mobileModuleId: p.mobileModuleId ?? get().mobileModuleId,
+        bibleSource: p.bibleSource ?? get().bibleSource,
+        commentarySource: p.commentarySource ?? get().commentarySource,
+      });
+      persist(false);
+    },
   };
 });
