@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import { useStudyStore } from "../store/useStudyStore";
-import { importModule, listModules, removeModule } from "../modules/library";
-import { dropModuleDb } from "../modules/useModuleDb";
+import { listModules } from "../modules/library";
+import { useModuleImport, IMPORT_ACCEPT } from "../modules/useModuleImport";
 import { openModuleTab } from "./layoutModel";
 import { useIsMobile } from "../useIsMobile";
 import type { ModuleMeta } from "../modules/types";
@@ -11,31 +11,11 @@ function Sidebar() {
   const setModules = useStudyStore((s) => s.setModules);
   const setMobileTab = useStudyStore((s) => s.setMobileTab);
   const isMobile = useIsMobile();
-  const input = useRef<HTMLInputElement>(null);
-  const [error, setError] = useState("");
+  const { inputRef: input, error, onFiles, onRemove } = useModuleImport(setModules);
 
   useEffect(() => {
     listModules().then(setModules);
   }, [setModules]);
-
-  async function onFiles(files: FileList | null) {
-    if (!files) return;
-    setError("");
-    for (const f of Array.from(files)) {
-      try {
-        await importModule(f);
-      } catch (e) {
-        setError(e instanceof Error ? e.message : String(e));
-      }
-    }
-    setModules(await listModules());
-  }
-
-  async function onRemove(id: string) {
-    await dropModuleDb(id);
-    await removeModule(id);
-    setModules(await listModules());
-  }
 
   const item = (m: ModuleMeta) => (
     <div key={m.id} className="flex items-start justify-between gap-2 mb-1 text-sm">
@@ -74,7 +54,7 @@ function Sidebar() {
         ref={input}
         type="file"
         multiple
-        accept=".bblx,.cmtx,.dctx,.lexx,.refx,.topx,.devx,.notx,.harx,.mapx,.lstx,.bbl,.cmt,.dct,.ref,.top,.dev,.not,.har,.map,.lst"
+        accept={IMPORT_ACCEPT}
         className="hidden"
         onChange={(e) => onFiles(e.target.files)}
       />

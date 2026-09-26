@@ -32,21 +32,27 @@ En Supabase, ve a **SQL Editor**, pega el contenido de `supabase/schema.sql`
 y ejecútalo. Crea una sola tabla, `user_state`, con seguridad a nivel de fila
 (cada persona solo puede leer y escribir su propia fila).
 
-## 4. Activar el inicio de sesión por correo
+## 4. Activar el inicio de sesión con correo y contraseña
 
 En **Authentication -> Providers**, confirma que **Email** esté activado.
-Por defecto usa "enlace mágico" (sin contraseña): la persona escribe su
-correo, recibe un enlace, y al tocarlo queda con la sesión iniciada.
+La app usa correo y contraseña, no enlace mágico.
+
+Por defecto, Supabase pide confirmar el correo antes de poder ingresar por
+primera vez (un solo correo, no en cada inicio de sesión). Si preferís que
+no haga falta ni eso, en **Authentication -> Sign In / Providers -> Email**
+apagá "Confirm email" — quedan las cuentas creadas sin ese paso extra.
 
 En **Authentication -> URL Configuration**, agrega la URL donde vas a
 publicar la app (y `http://localhost:5173` mientras desarrollas) a
-**Redirect URLs**, o el enlace del correo no va a volver a la app.
+**Redirect URLs**, o el enlace de "olvidé mi contraseña" no va a volver a
+la app.
 
 ## 5. Probar
 
-`npm run dev`, y en la esquina superior derecha aparece un botón para
-ingresar con el correo. Al iniciar sesión en un dispositivo nuevo, la
-página se recarga una vez para acomodar los paneles como los tenías.
+`npm run dev`, y en la esquina superior derecha aparece un botón para crear
+una cuenta o ingresar con correo y contraseña. Al iniciar sesión en un
+dispositivo nuevo, la página se recarga una vez para acomodar los paneles
+como los tenías.
 
 ## Qué se sincroniza y qué no
 

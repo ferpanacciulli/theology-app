@@ -1,5 +1,5 @@
 import Topbar from "./components/Topbar";
-import Sidebar from "./components/Sidebar";
+import ModuleBar from "./components/ModuleBar";
 import Workspace from "./components/Workspace";
 import MobileShell from "./components/MobileShell";
 import { useIsMobile } from "./useIsMobile";
@@ -36,14 +36,10 @@ function App() {
         <Topbar />
       </div>
 
-      <div className="flex flex-1 overflow-hidden">
-        <div className="w-64 shrink-0">
-          <Sidebar />
-        </div>
+      <ModuleBar />
 
-        <div className="flex-1 overflow-hidden">
-          <Workspace />
-        </div>
+      <div className="flex-1 overflow-hidden">
+        <Workspace />
       </div>
     </div>
   );
