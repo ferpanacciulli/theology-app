@@ -193,9 +193,9 @@ function BibleView({ moduleId, node }: { moduleId?: string; node?: FlexLayout.Ta
                 verseRefs.current[v.Verse] = el;
               }}
               onClick={() => setReference({ book, chapter, verse: v.Verse })}
-              style={{ backgroundColor: v.Verse === verse ? undefined : colorTint(highlight?.color) }}
+              style={{ backgroundColor: colorTint(highlight?.color, 0.26) }}
               className={`font-serif leading-8 text-[1.15rem] cursor-pointer rounded-lg px-3 py-0.5 transition-colors ${
-                v.Verse === verse ? "bg-sky-900/40" : "hover:bg-zinc-800/60"
+                v.Verse === verse ? "ring-1 ring-sky-500" : "hover:bg-zinc-800/60"
               }`}
             >
               <sup className="font-sans text-xs font-bold text-sky-400 mr-1.5">{v.Verse}</sup>

@@ -5,6 +5,7 @@ import { useHighlightStore } from "../store/useHighlightStore";
 import { HIGHLIGHT_COLORS } from "../notes/colors";
 import { useIsMobile } from "../useIsMobile";
 import { showTab } from "./layoutModel";
+import { norm } from "../search/searchIndex";
 
 function HighlightsView() {
   const entries = useHighlightStore((s) => s.entries);
@@ -18,14 +19,21 @@ function HighlightsView() {
 
   const [filterBook, setFilterBook] = useState<number | "">("");
   const [filterColor, setFilterColor] = useState<string>("");
+  const [query, setQuery] = useState("");
   const [editingColors, setEditingColors] = useState(false);
 
+  const q = norm(query.trim());
   const list = useMemo(
     () =>
       Object.values(entries)
-        .filter((e) => (filterBook === "" || e.book === filterBook) && (!filterColor || e.color === filterColor))
+        .filter(
+          (e) =>
+            (filterBook === "" || e.book === filterBook) &&
+            (!filterColor || e.color === filterColor) &&
+            (!q || (e.note && norm(e.note).includes(q)))
+        )
         .sort((a, b) => a.book - b.book || a.chapter - b.chapter || a.verse - b.verse),
-    [entries, filterBook, filterColor]
+    [entries, filterBook, filterColor, q]
   );
 
   function goTo(book: number, chapter: number, verse: number) {
@@ -61,6 +69,13 @@ function HighlightsView() {
       )}
 
       <div className="flex gap-2 mb-4 flex-wrap">
+        <input
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Buscar en tus notas…"
+          className={`${field} min-w-0 flex-1 basis-48`}
+        />
         <select
           value={filterBook}
           onChange={(e) => setFilterBook(e.target.value ? Number(e.target.value) : "")}
@@ -79,11 +94,14 @@ function HighlightsView() {
         </select>
       </div>
 
-      {list.length === 0 && (
+      {list.length === 0 && Object.keys(entries).length === 0 && (
         <p className="text-zinc-500">
-          Todavía no marcaste ningún versículo. Tocá el ✏️ que aparece al lado de cada versículo en
-          la Biblia.
+          Todavía no marcaste ningún versículo. Tocá el círculo que aparece al lado de cada
+          versículo en la Biblia.
         </p>
+      )}
+      {list.length === 0 && Object.keys(entries).length > 0 && (
+        <p className="text-zinc-500">Nada coincide con ese filtro o esa búsqueda.</p>
       )}
 
       <div className="space-y-2 max-w-3xl">

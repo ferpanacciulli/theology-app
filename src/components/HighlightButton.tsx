@@ -1,7 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import { useHighlightStore } from "../store/useHighlightStore";
-import { HIGHLIGHT_COLORS } from "../notes/colors";
+import { HIGHLIGHT_COLORS, colorHex } from "../notes/colors";
 import { verseKey } from "../notes/localHighlights";
+
+function PencilIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M12 20h9" />
+      <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+    </svg>
+  );
+}
 
 function HighlightButton({ book, chapter, verse }: { book: number; chapter: number; verse: number }) {
   const key = verseKey(book, chapter, verse);
@@ -38,27 +47,26 @@ function HighlightButton({ book, chapter, verse }: { book: number; chapter: numb
     setHighlight(book, chapter, verse, entry?.color === c ? null : (c as never), entry?.note ?? null);
   }
 
+  const hex = colorHex(entry?.color);
+  const hasNote = !!entry?.note;
+  const title = entry ? "Editar subrayado o nota" : "Subrayar o agregar una nota";
+
   return (
-    <span className="relative inline-block align-baseline" ref={ref} onClick={(e) => e.stopPropagation()}>
+    <span className="relative inline-block align-middle -translate-y-px" ref={ref} onClick={(e) => e.stopPropagation()}>
       <button
         onClick={() => setOpen((v) => !v)}
-        title={entry ? "Editar subrayado o nota" : "Subrayar o agregar una nota"}
-        className="text-xs align-super mr-1 leading-none"
+        title={title}
+        className="inline-flex items-center justify-center w-5 h-5 rounded-full mr-1.5 shrink-0 transition-transform hover:scale-110"
+        style={{
+          backgroundColor: hex ?? "transparent",
+          border: hex ? (hasNote ? "2px solid white" : "none") : `1.5px solid ${hasNote ? "#38bdf8" : "rgba(161,161,170,0.5)"}`,
+        }}
       >
-        {entry?.color ? (
-          <span
-            className="inline-block w-2.5 h-2.5 rounded-full"
-            style={{ backgroundColor: HIGHLIGHT_COLORS.find((c) => c.key === entry.color)?.hex }}
-          />
-        ) : (
-          <span className={entry?.note ? "text-sky-400" : "text-zinc-600 hover:text-zinc-400"}>
-            {entry?.note ? "📝" : "✏️"}
-          </span>
-        )}
+        {!hex && <PencilIcon className={`w-2.5 h-2.5 ${hasNote ? "text-sky-400" : "text-zinc-500"}`} />}
       </button>
 
       {open && (
-        <div className="absolute z-40 left-0 top-full mt-1 w-60 bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl p-3 text-sm not-italic font-normal text-zinc-200">
+        <div className="absolute z-40 left-0 top-full mt-1 w-60 bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl p-3 text-sm normal-case not-italic font-sans font-normal text-zinc-200">
           <div className="flex gap-1.5 mb-2 flex-wrap">
             {HIGHLIGHT_COLORS.map((c) => (
               <button
