@@ -11,10 +11,12 @@ create table if not exists public.user_state (
   position      jsonb,
   layout        jsonb,
   color_labels  jsonb,
+  plans         jsonb,
   updated_at    timestamptz not null default now()
 );
 
 alter table public.user_state add column if not exists color_labels jsonb;
+alter table public.user_state add column if not exists plans jsonb;
 
 alter table public.user_state enable row level security;
 

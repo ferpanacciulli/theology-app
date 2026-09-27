@@ -3,7 +3,7 @@ import type { ModuleMeta } from "../modules/types";
 import { loadJSON, saveJSON } from "./localPersist";
 import { scheduleSync } from "../lib/sync";
 
-export type MobileTab = "bible" | "search" | "commentary" | "library" | "notes" | "module";
+export type MobileTab = "bible" | "search" | "commentary" | "library" | "notes" | "plan" | "module";
 
 export interface SavedPosition {
   book: number;

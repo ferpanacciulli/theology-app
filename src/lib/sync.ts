@@ -21,6 +21,7 @@ interface RemoteRow {
   position: Record<string, unknown> | null;
   layout: Record<string, unknown> | null;
   color_labels: Record<string, string> | null;
+  plans: Record<string, unknown> | null;
 }
 
 /** Se llama cada vez que cambia la posición o la disposición de paneles. */
@@ -42,11 +43,13 @@ async function pushState() {
   const position = loadJSON<Record<string, unknown> | null>("position", null);
   const layout = loadJSON<Record<string, unknown> | null>("layout", null);
   const color_labels = loadJSON<Record<string, string>>("colorLabels", {});
+  const plans = loadJSON<Record<string, unknown> | null>("plans", null);
   await supabase.from(STATE_TABLE).upsert({
     user_id: session.user.id,
     position,
     layout,
     color_labels,
+    plans,
     updated_at: new Date().toISOString(),
   });
 }
@@ -106,7 +109,7 @@ export async function pullAndApply(userId: string) {
 
   const { data, error } = await supabase
     .from(STATE_TABLE)
-    .select("position, layout, color_labels")
+    .select("position, layout, color_labels, plans")
     .eq("user_id", userId)
     .maybeSingle();
   const row = data as RemoteRow | null;
@@ -126,6 +129,10 @@ export async function pullAndApply(userId: string) {
     if (row.color_labels) {
       saveJSON("colorLabels", row.color_labels);
       useHighlightStore.setState({ colorLabels: row.color_labels });
+    }
+    if (row.plans) {
+      const { usePlanStore } = await import("../store/usePlanStore");
+      usePlanStore.getState().applyRemote(row.plans as { activePlanId: string | null; progress: Record<string, { currentDay: number }> });
     }
     if (row.layout) {
       const current = JSON.stringify(loadJSON("layout", null));

@@ -88,14 +88,15 @@ export function showTab(id: string) {
 }
 
 /**
- * Abre (o vuelve a mostrar, si ya estaba abierta) la pestaña de Notas. Busca
- * por tipo de contenido, no por id: alguien que ya tenía una disposición
- * guardada de antes de que existiera "notes-main" también la encuentra.
+ * Abre (o vuelve a mostrar, si ya estaba abierta) una pestaña única de la app
+ * (Notas o Plan de lectura), identificada por su `component`. Busca por tipo
+ * de contenido, no por id: alguien que ya tenía una disposición guardada de
+ * antes de que existiera este id también la encuentra.
  */
-export function openNotesTab() {
+function openSingletonTab(component: string, name: string) {
   let found: FlexLayout.TabNode | undefined;
   model.visitNodes((node) => {
-    if (!found && node instanceof FlexLayout.TabNode && node.getComponent() === "notes") {
+    if (!found && node instanceof FlexLayout.TabNode && node.getComponent() === component) {
       found = node;
     }
   });
@@ -106,11 +107,9 @@ export function openNotesTab() {
   const target = model.getNodeById("side")?.getId() ?? model.getActiveTabset()?.getId();
   if (!target) return;
   model.doAction(
-    FlexLayout.Actions.addNode(
-      { id: "notes-main", type: "tab", name: "Notas", component: "notes" },
-      target,
-      FlexLayout.DockLocation.CENTER,
-      -1
-    )
+    FlexLayout.Actions.addNode({ type: "tab", name, component }, target, FlexLayout.DockLocation.CENTER, -1)
   );
 }
+
+export const openNotesTab = () => openSingletonTab("notes", "Notas");
+export const openPlanTab = () => openSingletonTab("plan", "Plan de lectura");

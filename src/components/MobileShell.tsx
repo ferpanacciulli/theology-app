@@ -7,6 +7,8 @@ import Sidebar from "./Sidebar";
 import ModuleView from "./ModuleView";
 import SearchView from "./SearchView";
 import HighlightsView from "./HighlightsView";
+import PlansView from "./PlansView";
+import VerseOfDay from "./VerseOfDay";
 
 const TABS: { id: MobileTab; label: string; icon: string }[] = [
   { id: "bible", label: "Biblia", icon: "📖" },
@@ -14,6 +16,7 @@ const TABS: { id: MobileTab; label: string; icon: string }[] = [
   { id: "commentary", label: "Comentario", icon: "💬" },
   { id: "library", label: "Biblioteca", icon: "📚" },
   { id: "notes", label: "Notas", icon: "📝" },
+  { id: "plan", label: "Plan", icon: "📅" },
 ];
 
 function MobileShell() {
@@ -26,6 +29,7 @@ function MobileShell() {
     <div className="h-dvh flex flex-col bg-zinc-950 text-white">
       <div className="shrink-0">
         <Topbar />
+        <VerseOfDay />
       </div>
 
       <div className="flex-1 overflow-hidden">
@@ -44,6 +48,9 @@ function MobileShell() {
         </div>
         <div className={tab === "notes" ? "h-full" : "hidden"}>
           <HighlightsView />
+        </div>
+        <div className={tab === "plan" ? "h-full" : "hidden"}>
+          <PlansView />
         </div>
         {tab === "module" && (
           <div className="h-full flex flex-col">

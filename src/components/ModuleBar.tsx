@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useStudyStore } from "../store/useStudyStore";
 import { listModules } from "../modules/library";
 import { useModuleImport, IMPORT_ACCEPT } from "../modules/useModuleImport";
-import { openModuleTab, showTab, openNotesTab } from "./layoutModel";
+import { openModuleTab, showTab, openNotesTab, openPlanTab } from "./layoutModel";
 import type { ModuleKind } from "../modules/types";
 
 const LABEL: Record<ModuleKind, string> = {
@@ -56,6 +56,12 @@ function ModuleBar() {
           className="px-3 py-1.5 rounded-lg text-sm whitespace-nowrap transition-colors bg-sky-800 hover:bg-sky-700"
         >
           📝 Notas
+        </button>
+        <button
+          onClick={openPlanTab}
+          className="px-3 py-1.5 rounded-lg text-sm whitespace-nowrap transition-colors bg-sky-800 hover:bg-sky-700"
+        >
+          📅 Plan de lectura
         </button>
         <div className="w-px self-stretch bg-zinc-800 mx-0.5" />
         {kinds.map((k) => (

@@ -4,6 +4,7 @@ import CommentaryPanel from "./CommentaryPanel";
 import ModuleView from "./ModuleView";
 import SearchView from "./SearchView";
 import HighlightsView from "./HighlightsView";
+import PlansView from "./PlansView";
 import { model, persistModel } from "./layoutModel";
 
 function factory(node: FlexLayout.TabNode) {
@@ -16,6 +17,7 @@ function factory(node: FlexLayout.TabNode) {
     return <ModuleView moduleId={node.getConfig()?.moduleId as string} />;
   }
   if (component === "notes") return <HighlightsView />;
+  if (component === "plan") return <PlansView />;
   return <div className="h-full bg-zinc-900 text-white p-4">Panel</div>;
 }
 

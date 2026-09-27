@@ -62,6 +62,7 @@ como los tenías.
 - ✅ Tus subrayados y notas por versículo, y los nombres que le pusiste a
   los colores. También funcionan sin cuenta (quedan en el dispositivo) y se
   mezclan con lo de la nube apenas inicias sesión.
+- ✅ En qué plan de lectura estás y en qué día vas.
 - ❌ Los módulos importados (`.bblx`, `.cmtx`, `.dctx`...). Siguen viviendo
   solo en el navegador de cada dispositivo (IndexedDB), como hasta ahora.
 

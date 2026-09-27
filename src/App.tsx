@@ -2,6 +2,7 @@ import Topbar from "./components/Topbar";
 import ModuleBar from "./components/ModuleBar";
 import Workspace from "./components/Workspace";
 import MobileShell from "./components/MobileShell";
+import VerseOfDay from "./components/VerseOfDay";
 import { useIsMobile } from "./useIsMobile";
 import { useEffect } from "react";
 import { useStudyStore } from "./store/useStudyStore";
@@ -40,6 +41,7 @@ function App() {
       <div className="h-12 shrink-0">
         <Topbar />
       </div>
+      <VerseOfDay />
 
       <ModuleBar />
 

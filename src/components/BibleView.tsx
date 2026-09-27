@@ -13,34 +13,8 @@ import HighlightButton from "./HighlightButton";
 import { useHighlightStore } from "../store/useHighlightStore";
 import { colorTint } from "../notes/colors";
 import { verseKey } from "../notes/localHighlights";
-
-interface Verse {
-  Book: number;
-  Chapter: number;
-  Verse: number;
-  Scripture: string;
-}
-
-type Index = Map<string, Verse[]>;
-
-let cache: Promise<Index> | null = null;
-
-// La RVR60 se carga en un chunk aparte, no en el bundle principal.
-function loadBible(): Promise<Index> {
-  if (!cache) {
-    cache = import("../data/RVR60.json").then((mod) => {
-      const idx: Index = new Map();
-      for (const v of (mod.default as { verses: Verse[] }).verses) {
-        const key = `${v.Book}:${v.Chapter}`;
-        const list = idx.get(key);
-        if (list) list.push(v);
-        else idx.set(key, [v]);
-      }
-      return idx;
-    });
-  }
-  return cache;
-}
+import { loadRVR60 } from "../bible/rvr60";
+import type { BibleIndex } from "../bible/rvr60";
 
 function BibleView({ moduleId, node }: { moduleId?: string; node?: FlexLayout.TabNode }) {
   const { book, chapter, verse, modules, bibleSource, setReference, setLookup, setBibleSource } =
@@ -68,13 +42,13 @@ function BibleView({ moduleId, node }: { moduleId?: string; node?: FlexLayout.Ta
   }
   const { db, error } = useModuleDb(source || undefined);
   const encrypted = useMemo(() => (db ? isEncrypted(db) : false), [db]);
-  const [index, setIndex] = useState<Index | null>(null);
+  const [index, setIndex] = useState<BibleIndex | null>(null);
   const [reference, setRef] = useState("");
   const verseRefs = useRef<Record<number, HTMLParagraphElement | null>>({});
   const touch = useRef<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
-    loadBible().then(setIndex);
+    loadRVR60().then(setIndex);
   }, []);
 
   const currentVerses = useMemo(() => {
