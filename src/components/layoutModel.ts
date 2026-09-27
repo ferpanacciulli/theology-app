@@ -29,7 +29,7 @@ const defaultJson = {
           },
           {
             type: "tabset",
-            children: [{ type: "tab", name: "Notas", component: "notes" }],
+            children: [{ type: "tab", id: "notes-main", name: "Notas", component: "notes" }],
           },
         ],
       },
@@ -85,4 +85,32 @@ export function showTab(id: string) {
   } catch {
     /* la pestaña fue cerrada */
   }
+}
+
+/**
+ * Abre (o vuelve a mostrar, si ya estaba abierta) la pestaña de Notas. Busca
+ * por tipo de contenido, no por id: alguien que ya tenía una disposición
+ * guardada de antes de que existiera "notes-main" también la encuentra.
+ */
+export function openNotesTab() {
+  let found: FlexLayout.TabNode | undefined;
+  model.visitNodes((node) => {
+    if (!found && node instanceof FlexLayout.TabNode && node.getComponent() === "notes") {
+      found = node;
+    }
+  });
+  if (found) {
+    showTab(found.getId());
+    return;
+  }
+  const target = model.getNodeById("side")?.getId() ?? model.getActiveTabset()?.getId();
+  if (!target) return;
+  model.doAction(
+    FlexLayout.Actions.addNode(
+      { id: "notes-main", type: "tab", name: "Notas", component: "notes" },
+      target,
+      FlexLayout.DockLocation.CENTER,
+      -1
+    )
+  );
 }

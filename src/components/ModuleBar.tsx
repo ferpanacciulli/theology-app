@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useStudyStore } from "../store/useStudyStore";
 import { listModules } from "../modules/library";
 import { useModuleImport, IMPORT_ACCEPT } from "../modules/useModuleImport";
-import { openModuleTab, showTab } from "./layoutModel";
+import { openModuleTab, showTab, openNotesTab } from "./layoutModel";
 import type { ModuleKind } from "../modules/types";
 
 const LABEL: Record<ModuleKind, string> = {
@@ -51,6 +51,13 @@ function ModuleBar() {
   return (
     <div ref={barRef} className="border-b border-zinc-800 bg-zinc-900">
       <div className="flex items-center gap-1.5 px-3 py-2 overflow-x-auto">
+        <button
+          onClick={openNotesTab}
+          className="px-3 py-1.5 rounded-lg text-sm whitespace-nowrap transition-colors bg-sky-800 hover:bg-sky-700"
+        >
+          📝 Notas
+        </button>
+        <div className="w-px self-stretch bg-zinc-800 mx-0.5" />
         {kinds.map((k) => (
           <button
             key={k}
