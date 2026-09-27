@@ -59,7 +59,12 @@ como los tenías.
 - ✅ Libro, capítulo y versículo donde te quedaste.
 - ✅ Qué pestañas tenías abiertas y cómo estaban acomodados los paneles.
 - ✅ Qué versión de Biblia y qué comentario tenías elegidos en cada panel.
-- ⬜ Notas y subrayados: todavía no están implementados como función; cuando
-  se agreguen, se sincronizan de la misma manera.
+- ✅ Tus subrayados y notas por versículo, y los nombres que le pusiste a
+  los colores. También funcionan sin cuenta (quedan en el dispositivo) y se
+  mezclan con lo de la nube apenas inicias sesión.
 - ❌ Los módulos importados (`.bblx`, `.cmtx`, `.dctx`...). Siguen viviendo
   solo en el navegador de cada dispositivo (IndexedDB), como hasta ahora.
+
+Si ya habías corrido `supabase/schema.sql` antes, volvé a correrlo entero:
+se puede ejecutar las veces que quieras sin romper nada, y esta vez agrega
+la tabla de subrayados y la columna para los nombres de los colores.

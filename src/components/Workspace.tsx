@@ -3,6 +3,7 @@ import BibleView from "./BibleView";
 import CommentaryPanel from "./CommentaryPanel";
 import ModuleView from "./ModuleView";
 import SearchView from "./SearchView";
+import HighlightsView from "./HighlightsView";
 import { model, persistModel } from "./layoutModel";
 
 function factory(node: FlexLayout.TabNode) {
@@ -14,13 +15,7 @@ function factory(node: FlexLayout.TabNode) {
   if (component === "module") {
     return <ModuleView moduleId={node.getConfig()?.moduleId as string} />;
   }
-  if (component === "notes") {
-    return (
-      <div className="h-full bg-zinc-900 text-white p-4 overflow-auto">
-        <h1 className="text-xl font-bold">Notas</h1>
-      </div>
-    );
-  }
+  if (component === "notes") return <HighlightsView />;
   return <div className="h-full bg-zinc-900 text-white p-4">Panel</div>;
 }
 

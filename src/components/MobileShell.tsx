@@ -6,6 +6,7 @@ import CommentaryPanel from "./CommentaryPanel";
 import Sidebar from "./Sidebar";
 import ModuleView from "./ModuleView";
 import SearchView from "./SearchView";
+import HighlightsView from "./HighlightsView";
 
 const TABS: { id: MobileTab; label: string; icon: string }[] = [
   { id: "bible", label: "Biblia", icon: "📖" },
@@ -41,12 +42,9 @@ function MobileShell() {
         <div className={tab === "library" ? "h-full" : "hidden"}>
           <Sidebar />
         </div>
-        {tab === "notes" && (
-          <div className="h-full bg-zinc-900 p-4">
-            <h1 className="text-xl font-bold mb-2">Notas</h1>
-            <p className="text-zinc-500 text-sm">Pronto: tus notas y subrayados, sincronizados con tu cuenta.</p>
-          </div>
-        )}
+        <div className={tab === "notes" ? "h-full" : "hidden"}>
+          <HighlightsView />
+        </div>
         {tab === "module" && (
           <div className="h-full flex flex-col">
             <button

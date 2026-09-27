@@ -9,6 +9,10 @@ import { getChapterVerses, isEncrypted } from "../modules/esword/reader";
 import { renderMarkup } from "../modules/esword/markup";
 import Diagnostics from "./Diagnostics";
 import EncryptedNotice from "./EncryptedNotice";
+import HighlightButton from "./HighlightButton";
+import { useHighlightStore } from "../store/useHighlightStore";
+import { colorTint } from "../notes/colors";
+import { verseKey } from "../notes/localHighlights";
 
 interface Verse {
   Book: number;
@@ -41,6 +45,7 @@ function loadBible(): Promise<Index> {
 function BibleView({ moduleId, node }: { moduleId?: string; node?: FlexLayout.TabNode }) {
   const { book, chapter, verse, modules, bibleSource, setReference, setLookup, setBibleSource } =
     useStudyStore();
+  const highlights = useHighlightStore((s) => s.entries);
   const bibles = modules.filter((m) => m.kind === "bible");
   // Pestaña de un módulo abierto directamente: fija. Pestaña principal (con `node`): recuerda
   // la última versión elegida ahí. Sin ninguna de las dos (celular): recuerda la última global.
@@ -179,21 +184,26 @@ function BibleView({ moduleId, node }: { moduleId?: string; node?: FlexLayout.Ta
       )}
 
       <div className="space-y-2 max-w-4xl">
-        {currentVerses.map((v) => (
-          <p
-            key={v.Verse}
-            ref={(el) => {
-              verseRefs.current[v.Verse] = el;
-            }}
-            onClick={() => setReference({ book, chapter, verse: v.Verse })}
-            className={`font-serif leading-8 text-[1.15rem] cursor-pointer rounded-lg px-3 py-0.5 transition-colors ${
-              v.Verse === verse ? "bg-sky-900/40" : "hover:bg-zinc-800/60"
-            }`}
-          >
-            <sup className="font-sans text-xs font-bold text-sky-400 mr-1.5">{v.Verse}</sup>
-            {renderMarkup(v.Scripture, setLookup)}
-          </p>
-        ))}
+        {currentVerses.map((v) => {
+          const highlight = highlights[verseKey(book, chapter, v.Verse)];
+          return (
+            <p
+              key={v.Verse}
+              ref={(el) => {
+                verseRefs.current[v.Verse] = el;
+              }}
+              onClick={() => setReference({ book, chapter, verse: v.Verse })}
+              style={{ backgroundColor: v.Verse === verse ? undefined : colorTint(highlight?.color) }}
+              className={`font-serif leading-8 text-[1.15rem] cursor-pointer rounded-lg px-3 py-0.5 transition-colors ${
+                v.Verse === verse ? "bg-sky-900/40" : "hover:bg-zinc-800/60"
+              }`}
+            >
+              <sup className="font-sans text-xs font-bold text-sky-400 mr-1.5">{v.Verse}</sup>
+              <HighlightButton book={book} chapter={chapter} verse={v.Verse} />
+              {renderMarkup(v.Scripture, setLookup)}
+            </p>
+          );
+        })}
       </div>
     </div>
   );

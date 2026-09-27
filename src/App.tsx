@@ -7,12 +7,17 @@ import { useEffect } from "react";
 import { useStudyStore } from "./store/useStudyStore";
 import { showTab } from "./components/layoutModel";
 import { useAuthSync } from "./useAuthSync";
+import { useHighlightStore } from "./store/useHighlightStore";
 
 function App() {
   const isMobile = useIsMobile();
   const setMobileTab = useStudyStore((s) => s.setMobileTab);
   const focusSearch = useStudyStore((s) => s.focusSearch);
   useAuthSync();
+
+  useEffect(() => {
+    useHighlightStore.getState().init();
+  }, []);
 
   // Ctrl/Cmd + K abre la búsqueda.
   useEffect(() => {
