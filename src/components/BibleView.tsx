@@ -15,6 +15,9 @@ import { colorTint } from "../notes/colors";
 import { verseKey } from "../notes/localHighlights";
 import { loadRVR60 } from "../bible/rvr60";
 import type { BibleIndex } from "../bible/rvr60";
+import { rtfToText } from "../modules/esword/markup";
+import SpeechControls from "./SpeechControls";
+import ShareVerseButton from "./ShareVerseButton";
 
 function BibleView({ moduleId, node }: { moduleId?: string; node?: FlexLayout.TabNode }) {
   const { book, chapter, verse, modules, bibleSource, setReference, setLookup, setBibleSource } =
@@ -58,6 +61,15 @@ function BibleView({ moduleId, node }: { moduleId?: string; node?: FlexLayout.Ta
       Scripture: v.Scripture,
     }));
   }, [source, db, index, book, chapter]);
+
+  const speechVerses = useMemo(
+    () => currentVerses.map((v) => ({ verse: v.Verse, text: rtfToText(v.Scripture) })),
+    [currentVerses]
+  );
+  const activeVerseText = useMemo(
+    () => rtfToText(currentVerses.find((v) => v.Verse === verse)?.Scripture ?? ""),
+    [currentVerses, verse]
+  );
 
   useEffect(() => {
     verseRefs.current[verse]?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -141,6 +153,8 @@ function BibleView({ moduleId, node }: { moduleId?: string; node?: FlexLayout.Ta
         </select>
         <button onClick={previousChapter} className="bg-zinc-800 hover:bg-zinc-700 px-4 py-2 rounded-lg">←</button>
         <button onClick={nextChapter} className="bg-zinc-800 hover:bg-zinc-700 px-4 py-2 rounded-lg">→</button>
+        <SpeechControls verses={speechVerses} onVerseStart={(v) => setReference({ book, chapter, verse: v })} resetKey={`${source}:${book}:${chapter}`} />
+        <ShareVerseButton book={book} chapter={chapter} verse={verse} text={activeVerseText} />
       </div>
 
       <h1 className="font-serif text-3xl font-bold mb-8">

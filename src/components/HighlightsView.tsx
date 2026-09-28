@@ -6,6 +6,8 @@ import { HIGHLIGHT_COLORS } from "../notes/colors";
 import { useIsMobile } from "../useIsMobile";
 import { showTab } from "./layoutModel";
 import { norm } from "../search/searchIndex";
+import { getRVR60Verse } from "../bible/rvr60";
+import { rtfToText } from "../modules/esword/markup";
 
 function HighlightsView() {
   const entries = useHighlightStore((s) => s.entries);
@@ -21,6 +23,7 @@ function HighlightsView() {
   const [filterColor, setFilterColor] = useState<string>("");
   const [query, setQuery] = useState("");
   const [editingColors, setEditingColors] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   const q = norm(query.trim());
   const list = useMemo(
@@ -36,6 +39,37 @@ function HighlightsView() {
     [entries, filterBook, filterColor, q]
   );
 
+  async function exportNotes() {
+    setExporting(true);
+    try {
+      const all = Object.values(entries).sort(
+        (a, b) => a.book - b.book || a.chapter - b.chapter || a.verse - b.verse
+      );
+      const lines = [`# Mis notas y subrayados`, ``, `Exportado el ${new Date().toLocaleDateString()}`, ``];
+      for (const e of all) {
+        const name = books.find((b) => b.id === e.book)?.name ?? "";
+        const raw = await getRVR60Verse(e.book, e.chapter, e.verse);
+        const plain = raw ? rtfToText(raw) : "";
+        lines.push(`## ${name} ${e.chapter}:${e.verse}${e.color ? " — " + labelFor(e.color) : ""}`);
+        if (plain) lines.push(`> ${plain}`);
+        if (e.note) {
+          lines.push("");
+          lines.push(e.note);
+        }
+        lines.push("");
+      }
+      const blob = new Blob([lines.join("\n")], { type: "text/markdown;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `mis-notas-${new Date().toISOString().slice(0, 10)}.md`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } finally {
+      setExporting(false);
+    }
+  }
+
   function goTo(book: number, chapter: number, verse: number) {
     setReference({ book, chapter, verse });
     if (isMobile) setMobileTab("bible");
@@ -48,9 +82,18 @@ function HighlightsView() {
     <div className="h-full overflow-auto bg-zinc-900 text-zinc-200 p-4 md:p-6">
       <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
         <h1 className="font-serif text-2xl font-bold">Mis notas y subrayados</h1>
-        <button onClick={() => setEditingColors((v) => !v)} className="text-sm text-sky-400 hover:underline">
-          {editingColors ? "Listo" : "Nombrar colores"}
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={exportNotes}
+            disabled={exporting || Object.keys(entries).length === 0}
+            className="text-sm text-sky-400 hover:underline disabled:opacity-40 disabled:hover:no-underline"
+          >
+            {exporting ? "Generando…" : "⬇️ Exportar"}
+          </button>
+          <button onClick={() => setEditingColors((v) => !v)} className="text-sm text-sky-400 hover:underline">
+            {editingColors ? "Listo" : "Nombrar colores"}
+          </button>
+        </div>
       </div>
 
       {editingColors && (
