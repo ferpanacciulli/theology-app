@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { MouseEvent } from "react";
 import { books } from "../bible/books";
 import { chaptersByBook } from "../bible/chapters";
@@ -14,8 +14,11 @@ import EncryptedNotice from "./EncryptedNotice";
 
 /** Muestra un capítulo. `moduleId` fija la versión de esta pestaña (vacío = RVR1960 incluida). */
 function BibleView({ moduleId }: { moduleId?: string }) {
-  const { book, chapter, verse, selection, setReference, selectVerse, setActiveSource, setLookup } =
-    useStudyStore();
+  const {
+    book, chapter, verse, selection, rangeMode,
+    setReference, selectVerse, setActiveSource, setLookup, setRangeMode,
+  } = useStudyStore();
+  const [awaitingSecond, setAwaitingSecond] = useState(false);
   const source = moduleId ?? "";
   const { verses: currentVerses, db, error, encrypted, loading } = useChapterVerses(source, book, chapter);
   const highlights = useHighlightStore((s) => s.entries);
@@ -35,9 +38,28 @@ function BibleView({ moduleId }: { moduleId?: string }) {
     else if (book > 1) setReference({ book: book - 1, chapter: chaptersByBook[book - 1] });
   }
 
+  useEffect(() => {
+    if (!rangeMode) setAwaitingSecond(false);
+  }, [rangeMode]);
+
   function onVerseClick(v: number, e: MouseEvent) {
     setActiveSource(source);
-    selectVerse(v, e.shiftKey ? "range" : "replace");
+    if (e.shiftKey) {
+      selectVerse(v, "range");
+      return;
+    }
+    if (rangeMode) {
+      if (awaitingSecond) {
+        selectVerse(v, "range");
+        setAwaitingSecond(false);
+        setRangeMode(false);
+      } else {
+        selectVerse(v, "replace");
+        setAwaitingSecond(true);
+      }
+      return;
+    }
+    selectVerse(v, "replace");
   }
 
   return (
@@ -61,6 +83,20 @@ function BibleView({ moduleId }: { moduleId?: string }) {
       <h1 className="font-serif text-3xl font-bold mb-6">
         {books.find((b) => b.id === book)?.name} {chapter}
       </h1>
+
+      {rangeMode && (
+        <div className="mb-4 max-w-4xl flex items-center justify-between gap-2 bg-sky-950/60 border border-sky-900 rounded-lg px-3 py-2 text-sm">
+          <span>
+            📌 {awaitingSecond ? "Ahora tocá el último versículo del rango." : "Tocá el primer versículo del rango."}
+          </span>
+          <button
+            onClick={() => setRangeMode(false)}
+            className="text-sky-400 hover:underline shrink-0"
+          >
+            Cancelar
+          </button>
+        </div>
+      )}
 
       {loading && <p className="text-zinc-500">Cargando…</p>}
       {error && <p className="text-red-400">{error}</p>}

@@ -39,6 +39,8 @@ interface StudyState {
   speakingVerse: number | null;
   /** Pedido de búsqueda de texto desde la barra de arriba (n cambia en cada pedido). */
   searchRequest: { q: string; n: number };
+  /** true mientras la persona está eligiendo un rango de versículos a mano (botón "Elegir varios"). */
+  rangeMode: boolean;
   modules: ModuleMeta[];
   lookup: string;
   mobileTab: MobileTab;
@@ -55,6 +57,7 @@ interface StudyState {
   setActiveSource: (id: string) => void;
   setSpeakingVerse: (v: number | null) => void;
   requestSearch: (q: string) => void;
+  setRangeMode: (v: boolean) => void;
   setModules: (m: ModuleMeta[]) => void;
   setLookup: (code: string) => void;
   setMobileTab: (tab: MobileTab, moduleId?: string) => void;
@@ -88,6 +91,7 @@ export const useStudyStore = create<StudyState>((set, get) => {
     activeSource: saved.bibleSource,
     speakingVerse: null,
     searchRequest: { q: "", n: 0 },
+    rangeMode: false,
     modules: [],
     lookup: "",
     mobileTab: saved.mobileTab,
@@ -125,6 +129,7 @@ export const useStudyStore = create<StudyState>((set, get) => {
     setActiveSource: (activeSource) => set({ activeSource }),
     setSpeakingVerse: (speakingVerse) => set({ speakingVerse }),
     requestSearch: (q) => set((s) => ({ searchRequest: { q, n: s.searchRequest.n + 1 } })),
+    setRangeMode: (rangeMode) => set({ rangeMode }),
     setModules: (modules) => set({ modules }),
     setLookup: (lookup) => set({ lookup }),
     setMobileTab: (mobileTab, moduleId) => {

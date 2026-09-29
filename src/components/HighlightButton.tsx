@@ -66,14 +66,14 @@ function HighlightButton({ book, chapter, verse }: { book: number; chapter: numb
       </button>
 
       {open && (
-        <div className="absolute z-40 left-0 top-full mt-1 w-60 bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl p-3 text-sm normal-case not-italic font-sans font-normal text-zinc-200">
+        <div className="absolute z-40 left-0 top-full mt-1 w-64 bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl p-3 text-sm normal-case not-italic font-sans font-normal text-zinc-200">
           <div className="flex gap-1.5 mb-2 flex-wrap">
             {HIGHLIGHT_COLORS.map((c) => (
               <button
                 key={c.key}
                 title={labelFor(c.key)}
                 onClick={() => toggleColor(c.key)}
-                className="w-6 h-6 rounded-full border-2 transition-transform hover:scale-110"
+                className="w-5 h-5 rounded-full border-2 transition-transform hover:scale-110"
                 style={{
                   backgroundColor: c.hex,
                   borderColor: entry?.color === c.key ? "#fff" : "transparent",

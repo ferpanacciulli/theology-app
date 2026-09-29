@@ -1,10 +1,18 @@
+// Los primeros 6 son los originales: no se les cambia la key, para no perder
+// el color de lo que ya esté subrayado. Los otros 6 se agregaron después.
 export const HIGHLIGHT_COLORS = [
   { key: "yellow", hex: "#facc15", defaultLabel: "Amarillo" },
-  { key: "green", hex: "#4ade80", defaultLabel: "Verde" },
-  { key: "blue", hex: "#60a5fa", defaultLabel: "Azul" },
-  { key: "pink", hex: "#f472b6", defaultLabel: "Rosa" },
-  { key: "purple", hex: "#c084fc", defaultLabel: "Violeta" },
   { key: "orange", hex: "#fb923c", defaultLabel: "Naranja" },
+  { key: "red", hex: "#f87171", defaultLabel: "Rojo" },
+  { key: "pink", hex: "#f472b6", defaultLabel: "Rosa" },
+  { key: "fuchsia", hex: "#e879f9", defaultLabel: "Fucsia" },
+  { key: "purple", hex: "#c084fc", defaultLabel: "Violeta" },
+  { key: "indigo", hex: "#818cf8", defaultLabel: "Índigo" },
+  { key: "blue", hex: "#60a5fa", defaultLabel: "Azul" },
+  { key: "cyan", hex: "#22d3ee", defaultLabel: "Celeste" },
+  { key: "teal", hex: "#2dd4bf", defaultLabel: "Turquesa" },
+  { key: "green", hex: "#4ade80", defaultLabel: "Verde" },
+  { key: "lime", hex: "#a3e635", defaultLabel: "Lima" },
 ] as const;
 
 export type ColorKey = (typeof HIGHLIGHT_COLORS)[number]["key"];
