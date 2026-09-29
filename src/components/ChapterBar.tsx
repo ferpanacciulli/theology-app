@@ -14,8 +14,8 @@ import ShareVerseButton from "./ShareVerseButton";
 /** Todos los controles de lectura: navegar, elegir versión, buscar, escuchar y compartir. */
 function ChapterBar() {
   const {
-    book, chapter, verse, selection, activeSource, modules, rangeMode,
-    setReference, setActiveSource, requestSearch, setMobileTab, setCurrentVerse, setRangeMode,
+    book, chapter, verse, selection, activeSource, modules,
+    setReference, setActiveSource, requestSearch, setMobileTab, setCurrentVerse,
   } = useStudyStore();
   const isMobile = useIsMobile();
   const [query, setQuery] = useState("");
@@ -70,11 +70,6 @@ function ChapterBar() {
     else if (book > 1) setReference({ book: book - 1, chapter: chaptersByBook[book - 1] });
   }
 
-  function toggleRangeMode() {
-    setRangeMode(!rangeMode);
-    setMenuOpen(false);
-  }
-
   const field = "bg-zinc-800 px-3 py-2 rounded-lg outline-none";
   const iconBtn = "bg-zinc-800 hover:bg-zinc-700 px-3 py-2 rounded-lg shrink-0";
 
@@ -121,14 +116,6 @@ function ChapterBar() {
         <option key={m.id} value={m.id}>{m.abbreviation || m.title}</option>
       ))}
     </select>
-  );
-  const rangeButton = (
-    <button
-      onClick={toggleRangeMode}
-      className={`px-3 py-2 rounded-lg transition-colors ${rangeMode ? "bg-sky-700 hover:bg-sky-600" : "bg-zinc-800 hover:bg-zinc-700"}`}
-    >
-      📌 {rangeMode ? "Cancelar selección" : "Elegir varios"}
-    </button>
   );
   const speech = (
     <SpeechControls
@@ -181,7 +168,6 @@ function ChapterBar() {
           <div className="px-2 pb-3 pt-1 border-t border-zinc-800 flex flex-col gap-2">
             <div className="flex gap-2 flex-wrap items-center">
               {versionSelect}
-              {rangeButton}
             </div>
             <div className="flex gap-1.5 flex-wrap items-center">{speech}</div>
             {share}
@@ -209,11 +195,10 @@ function ChapterBar() {
         />
       </form>
 
-      {rangeButton}
       {speech}
       {share}
       <span className="text-xs text-zinc-500 w-full md:w-auto">
-        Tip: mantené Shift y tocá otro versículo para elegir un rango.
+        Tip: seleccioná el texto con el mouse para elegir varios versículos.
       </span>
     </div>
   );

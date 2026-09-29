@@ -25,8 +25,6 @@ const saved = loadJSON<SavedPosition>("position", {
   commentarySource: "",
 });
 
-export type SelectMode = "replace" | "toggle" | "range";
-
 interface StudyState {
   book: number;
   chapter: number;
@@ -39,8 +37,6 @@ interface StudyState {
   speakingVerse: number | null;
   /** Pedido de búsqueda de texto desde la barra de arriba (n cambia en cada pedido). */
   searchRequest: { q: string; n: number };
-  /** true mientras la persona está eligiendo un rango de versículos a mano (botón "Elegir varios"). */
-  rangeMode: boolean;
   modules: ModuleMeta[];
   lookup: string;
   mobileTab: MobileTab;
@@ -52,12 +48,11 @@ interface StudyState {
   setReference: (r: { book: number; chapter: number; verse?: number }) => void;
   /** Mueve el marcador de lectura sin tocar la selección (lo usa la lectura en voz alta). */
   setCurrentVerse: (verse: number) => void;
-  selectVerse: (verse: number, mode: SelectMode) => void;
-  clearSelection: () => void;
+  /** Reemplaza la selección completa (la usa la selección de texto con el mouse/dedo). */
+  setSelection: (verses: number[]) => void;
   setActiveSource: (id: string) => void;
   setSpeakingVerse: (v: number | null) => void;
   requestSearch: (q: string) => void;
-  setRangeMode: (v: boolean) => void;
   setModules: (m: ModuleMeta[]) => void;
   setLookup: (code: string) => void;
   setMobileTab: (tab: MobileTab, moduleId?: string) => void;
@@ -91,7 +86,6 @@ export const useStudyStore = create<StudyState>((set, get) => {
     activeSource: saved.bibleSource,
     speakingVerse: null,
     searchRequest: { q: "", n: 0 },
-    rangeMode: false,
     modules: [],
     lookup: "",
     mobileTab: saved.mobileTab,
@@ -108,28 +102,15 @@ export const useStudyStore = create<StudyState>((set, get) => {
       set({ verse });
       persist();
     },
-    selectVerse: (verse, mode) => {
-      const s = get();
-      if (mode === "replace") {
-        set({ verse, selection: [verse] });
-      } else if (mode === "toggle") {
-        if (s.selection.includes(verse)) {
-          set({ selection: s.selection.filter((x) => x !== verse) });
-        } else {
-          set({ verse, selection: [...s.selection, verse].sort((a, b) => a - b) });
-        }
-      } else {
-        const from = Math.min(s.verse, verse);
-        const to = Math.max(s.verse, verse);
-        set({ selection: Array.from({ length: to - from + 1 }, (_, i) => from + i) });
-      }
+    setSelection: (verses) => {
+      const sorted = [...new Set(verses)].sort((a, b) => a - b);
+      if (!sorted.length) return;
+      set({ selection: sorted, verse: sorted[sorted.length - 1] });
       persist();
     },
-    clearSelection: () => set((s) => ({ selection: [s.verse] })),
     setActiveSource: (activeSource) => set({ activeSource }),
     setSpeakingVerse: (speakingVerse) => set({ speakingVerse }),
     requestSearch: (q) => set((s) => ({ searchRequest: { q, n: s.searchRequest.n + 1 } })),
-    setRangeMode: (rangeMode) => set({ rangeMode }),
     setModules: (modules) => set({ modules }),
     setLookup: (lookup) => set({ lookup }),
     setMobileTab: (mobileTab, moduleId) => {

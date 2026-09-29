@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from "react";
-import type { MouseEvent } from "react";
+import { useEffect, useRef } from "react";
 import { books } from "../bible/books";
 import { chaptersByBook } from "../bible/chapters";
 import { useChapterVerses } from "../bible/useChapterVerses";
@@ -14,20 +13,53 @@ import EncryptedNotice from "./EncryptedNotice";
 
 /** Muestra un capítulo. `moduleId` fija la versión de esta pestaña (vacío = RVR1960 incluida). */
 function BibleView({ moduleId }: { moduleId?: string }) {
-  const {
-    book, chapter, verse, selection, rangeMode,
-    setReference, selectVerse, setActiveSource, setLookup, setRangeMode,
-  } = useStudyStore();
-  const [awaitingSecond, setAwaitingSecond] = useState(false);
+  const { book, chapter, verse, selection, setReference, setSelection, setActiveSource, setLookup } =
+    useStudyStore();
   const source = moduleId ?? "";
   const { verses: currentVerses, db, error, encrypted, loading } = useChapterVerses(source, book, chapter);
   const highlights = useHighlightStore((s) => s.entries);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const verseRefs = useRef<Record<number, HTMLParagraphElement | null>>({});
   const touch = useRef<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
     verseRefs.current[verse]?.scrollIntoView({ behavior: "smooth", block: "center" });
   }, [verse, currentVerses]);
+
+  // Seleccionar texto con el mouse (o con el dedo, en el celular) marca esos versículos,
+  // igual que seleccionar cualquier texto: no hace falta ningún botón especial.
+  useEffect(() => {
+    function verseOf(node: Node | null): number | null {
+      const el = node instanceof Element ? node : node?.parentElement ?? null;
+      const withAttr = el?.closest("[data-verse]");
+      const raw = withAttr?.getAttribute("data-verse");
+      return raw ? Number(raw) : null;
+    }
+
+    function onSelectionChange() {
+      const sel = window.getSelection();
+      if (!sel || sel.isCollapsed || sel.rangeCount === 0) return;
+      const container = containerRef.current;
+      if (!container) return;
+      const range = sel.getRangeAt(0);
+      if (!container.contains(range.commonAncestorContainer)) return;
+
+      const a = verseOf(range.startContainer);
+      const b = verseOf(range.endContainer);
+      if (a === null || b === null) return;
+
+      const lo = Math.min(a, b);
+      const hi = Math.max(a, b);
+      const verses = currentVerses.filter((v) => v.Verse >= lo && v.Verse <= hi).map((v) => v.Verse);
+      if (verses.length > 1) {
+        setActiveSource(source);
+        setSelection(verses);
+      }
+    }
+
+    document.addEventListener("selectionchange", onSelectionChange);
+    return () => document.removeEventListener("selectionchange", onSelectionChange);
+  }, [currentVerses, source, setActiveSource, setSelection]);
 
   function nextChapter() {
     if (chapter < chaptersByBook[book]) setReference({ book, chapter: chapter + 1 });
@@ -38,32 +70,17 @@ function BibleView({ moduleId }: { moduleId?: string }) {
     else if (book > 1) setReference({ book: book - 1, chapter: chaptersByBook[book - 1] });
   }
 
-  useEffect(() => {
-    if (!rangeMode) setAwaitingSecond(false);
-  }, [rangeMode]);
-
-  function onVerseClick(v: number, e: MouseEvent) {
+  function onVerseClick(v: number) {
+    // Si se acaba de arrastrar una selección de texto, se respeta esa selección
+    // en vez de colapsarla al versículo tocado.
+    if (window.getSelection()?.toString()) return;
     setActiveSource(source);
-    if (e.shiftKey) {
-      selectVerse(v, "range");
-      return;
-    }
-    if (rangeMode) {
-      if (awaitingSecond) {
-        selectVerse(v, "range");
-        setAwaitingSecond(false);
-        setRangeMode(false);
-      } else {
-        selectVerse(v, "replace");
-        setAwaitingSecond(true);
-      }
-      return;
-    }
-    selectVerse(v, "replace");
+    setSelection([v]);
   }
 
   return (
     <div
+      ref={containerRef}
       className="h-full overflow-auto bg-zinc-900 text-zinc-200 p-4 md:p-6"
       onTouchStart={(e) => {
         touch.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
@@ -84,20 +101,6 @@ function BibleView({ moduleId }: { moduleId?: string }) {
         {books.find((b) => b.id === book)?.name} {chapter}
       </h1>
 
-      {rangeMode && (
-        <div className="mb-4 max-w-4xl flex items-center justify-between gap-2 bg-sky-950/60 border border-sky-900 rounded-lg px-3 py-2 text-sm">
-          <span>
-            📌 {awaitingSecond ? "Ahora tocá el último versículo del rango." : "Tocá el primer versículo del rango."}
-          </span>
-          <button
-            onClick={() => setRangeMode(false)}
-            className="text-sky-400 hover:underline shrink-0"
-          >
-            Cancelar
-          </button>
-        </div>
-      )}
-
       {loading && <p className="text-zinc-500">Cargando…</p>}
       {error && <p className="text-red-400">{error}</p>}
       {encrypted && <EncryptedNotice />}
@@ -115,16 +118,17 @@ function BibleView({ moduleId }: { moduleId?: string }) {
           return (
             <p
               key={v.Verse}
+              data-verse={v.Verse}
               ref={(el) => {
                 verseRefs.current[v.Verse] = el;
               }}
-              onClick={(e) => onVerseClick(v.Verse, e)}
+              onClick={() => onVerseClick(v.Verse)}
               style={{ backgroundColor: colorTint(highlight?.color, 0.26) }}
-              className={`font-serif leading-8 text-[1.15rem] cursor-pointer rounded-lg px-3 py-0.5 transition-colors ${
+              className={`font-serif leading-8 text-[1.15rem] cursor-pointer rounded-lg px-3 py-0.5 transition-colors select-text ${
                 selected ? "ring-1 ring-sky-500" : "hover:bg-zinc-800/60"
               }`}
             >
-              <sup className="font-sans text-xs font-bold text-sky-400 mr-1.5">{v.Verse}</sup>
+              <sup className="font-sans text-xs font-bold text-sky-400 mr-1.5 select-none">{v.Verse}</sup>
               <HighlightButton book={book} chapter={chapter} verse={v.Verse} />
               {renderMarkup(v.Scripture, setLookup)}
             </p>

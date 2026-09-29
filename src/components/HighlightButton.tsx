@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useHighlightStore } from "../store/useHighlightStore";
+import { useStudyStore } from "../store/useStudyStore";
 import { HIGHLIGHT_COLORS, colorHex } from "../notes/colors";
 import { verseKey } from "../notes/localHighlights";
 
@@ -17,9 +18,15 @@ function HighlightButton({ book, chapter, verse }: { book: number; chapter: numb
   const entry = useHighlightStore((s) => s.entries[key]);
   const setHighlight = useHighlightStore((s) => s.setHighlight);
   const labelFor = useHighlightStore((s) => s.labelFor);
+  const globalSelection = useStudyStore((s) => s.selection);
   const [open, setOpen] = useState(false);
   const [note, setNote] = useState(entry?.note ?? "");
   const ref = useRef<HTMLSpanElement>(null);
+
+  // Si este versículo forma parte de una selección de varios, el color y la nota
+  // se aplican a todos los de la selección, no solo a este.
+  const batchTargets = globalSelection.length > 1 && globalSelection.includes(verse) ? globalSelection : [verse];
+  const batch = batchTargets.length > 1;
 
   useEffect(() => {
     if (open) setNote(entry?.note ?? "");
@@ -33,18 +40,29 @@ function HighlightButton({ book, chapter, verse }: { book: number; chapter: numb
     document.addEventListener("mousedown", onClick);
     return () => document.removeEventListener("mousedown", onClick);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, note]);
+  }, [open, note, batchTargets.join(",")]);
 
   function close() {
     setOpen(false);
     const trimmed = note.trim();
-    if (trimmed !== (entry?.note ?? "")) {
-      setHighlight(book, chapter, verse, entry?.color ?? null, trimmed || null);
+    if (trimmed === (entry?.note ?? "")) return;
+    for (const v of batchTargets) {
+      const e = v === verse ? entry : useHighlightStore.getState().entries[verseKey(book, chapter, v)];
+      setHighlight(book, chapter, v, e?.color ?? null, trimmed || null);
     }
   }
 
   function toggleColor(c: string) {
-    setHighlight(book, chapter, verse, entry?.color === c ? null : (c as never), entry?.note ?? null);
+    const turnOff = entry?.color === c;
+    for (const v of batchTargets) {
+      const e = v === verse ? entry : useHighlightStore.getState().entries[verseKey(book, chapter, v)];
+      setHighlight(book, chapter, v, turnOff ? null : (c as never), e?.note ?? null);
+    }
+  }
+
+  function removeAll() {
+    for (const v of batchTargets) setHighlight(book, chapter, v, null, null);
+    setOpen(false);
   }
 
   const hex = colorHex(entry?.color);
@@ -67,6 +85,11 @@ function HighlightButton({ book, chapter, verse }: { book: number; chapter: numb
 
       {open && (
         <div className="absolute z-40 left-0 top-full mt-1 w-64 bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl p-3 text-sm normal-case not-italic font-sans font-normal text-zinc-200">
+          {batch && (
+            <p className="text-xs text-sky-400 mb-2">
+              Se aplica a los {batchTargets.length} versículos seleccionados.
+            </p>
+          )}
           <div className="flex gap-1.5 mb-2 flex-wrap">
             {HIGHLIGHT_COLORS.map((c) => (
               <button
@@ -84,19 +107,13 @@ function HighlightButton({ book, chapter, verse }: { book: number; chapter: numb
           <textarea
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="Nota (opcional)"
+            placeholder={batch ? "Nota para todos (opcional)" : "Nota (opcional)"}
             rows={3}
             className="w-full bg-zinc-800 rounded-lg p-2 outline-none text-xs resize-none"
           />
           <div className="flex items-center justify-between mt-2">
             {(entry?.color || entry?.note) && (
-              <button
-                onClick={() => {
-                  setHighlight(book, chapter, verse, null, null);
-                  setOpen(false);
-                }}
-                className="text-red-400 text-xs hover:underline"
-              >
+              <button onClick={removeAll} className="text-red-400 text-xs hover:underline">
                 Quitar
               </button>
             )}
