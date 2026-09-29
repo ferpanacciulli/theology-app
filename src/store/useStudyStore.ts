@@ -25,10 +25,20 @@ const saved = loadJSON<SavedPosition>("position", {
   commentarySource: "",
 });
 
+export type SelectMode = "replace" | "toggle" | "range";
+
 interface StudyState {
   book: number;
   chapter: number;
   verse: number;
+  /** Versículos seleccionados del capítulo actual (para compartir y escuchar). */
+  selection: number[];
+  /** Versión de la última Biblia que la persona eligió o tocó (la que se comparte y se escucha). */
+  activeSource: string;
+  /** Versículo que se está leyendo en voz alta ahora mismo, si hay lectura en curso. */
+  speakingVerse: number | null;
+  /** Pedido de búsqueda de texto desde la barra de arriba (n cambia en cada pedido). */
+  searchRequest: { q: string; n: number };
   modules: ModuleMeta[];
   lookup: string;
   mobileTab: MobileTab;
@@ -38,6 +48,13 @@ interface StudyState {
   commentarySource: string;
   searchFocus: number;
   setReference: (r: { book: number; chapter: number; verse?: number }) => void;
+  /** Mueve el marcador de lectura sin tocar la selección (lo usa la lectura en voz alta). */
+  setCurrentVerse: (verse: number) => void;
+  selectVerse: (verse: number, mode: SelectMode) => void;
+  clearSelection: () => void;
+  setActiveSource: (id: string) => void;
+  setSpeakingVerse: (v: number | null) => void;
+  requestSearch: (q: string) => void;
   setModules: (m: ModuleMeta[]) => void;
   setLookup: (code: string) => void;
   setMobileTab: (tab: MobileTab, moduleId?: string) => void;
@@ -67,6 +84,10 @@ export const useStudyStore = create<StudyState>((set, get) => {
     book: saved.book,
     chapter: saved.chapter,
     verse: saved.verse,
+    selection: [saved.verse],
+    activeSource: saved.bibleSource,
+    speakingVerse: null,
+    searchRequest: { q: "", n: 0 },
     modules: [],
     lookup: "",
     mobileTab: saved.mobileTab,
@@ -75,9 +96,35 @@ export const useStudyStore = create<StudyState>((set, get) => {
     commentarySource: saved.commentarySource,
     searchFocus: 0,
     setReference: ({ book, chapter, verse }) => {
-      set({ book, chapter, verse: verse ?? 1 });
+      const v = verse ?? 1;
+      set({ book, chapter, verse: v, selection: [v] });
       persist();
     },
+    setCurrentVerse: (verse) => {
+      set({ verse });
+      persist();
+    },
+    selectVerse: (verse, mode) => {
+      const s = get();
+      if (mode === "replace") {
+        set({ verse, selection: [verse] });
+      } else if (mode === "toggle") {
+        if (s.selection.includes(verse)) {
+          set({ selection: s.selection.filter((x) => x !== verse) });
+        } else {
+          set({ verse, selection: [...s.selection, verse].sort((a, b) => a - b) });
+        }
+      } else {
+        const from = Math.min(s.verse, verse);
+        const to = Math.max(s.verse, verse);
+        set({ selection: Array.from({ length: to - from + 1 }, (_, i) => from + i) });
+      }
+      persist();
+    },
+    clearSelection: () => set((s) => ({ selection: [s.verse] })),
+    setActiveSource: (activeSource) => set({ activeSource }),
+    setSpeakingVerse: (speakingVerse) => set({ speakingVerse }),
+    requestSearch: (q) => set((s) => ({ searchRequest: { q, n: s.searchRequest.n + 1 } })),
     setModules: (modules) => set({ modules }),
     setLookup: (lookup) => set({ lookup }),
     setMobileTab: (mobileTab, moduleId) => {
@@ -85,7 +132,7 @@ export const useStudyStore = create<StudyState>((set, get) => {
       persist();
     },
     setBibleSource: (bibleSource) => {
-      set({ bibleSource });
+      set({ bibleSource, activeSource: bibleSource });
       persist();
     },
     setCommentarySource: (commentarySource) => {
@@ -98,6 +145,7 @@ export const useStudyStore = create<StudyState>((set, get) => {
         book: p.book ?? get().book,
         chapter: p.chapter ?? get().chapter,
         verse: p.verse ?? get().verse,
+        selection: [p.verse ?? get().verse],
         mobileTab: p.mobileTab ?? get().mobileTab,
         mobileModuleId: p.mobileModuleId ?? get().mobileModuleId,
         bibleSource: p.bibleSource ?? get().bibleSource,

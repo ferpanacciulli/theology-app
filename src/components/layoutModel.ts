@@ -57,8 +57,18 @@ export function persistModel(m: FlexLayout.Model) {
   scheduleSync();
 }
 
-/** Abre un módulo importado en una pestaña nueva (Biblias a la izquierda, el resto a la derecha). */
+/** Abre un módulo importado en una pestaña nueva (Biblias a la izquierda, el resto a la derecha). Si ya estaba abierto, lo vuelve a mostrar en vez de duplicarlo. */
 export function openModuleTab(m: ModuleMeta) {
+  let found: FlexLayout.TabNode | undefined;
+  model.visitNodes((node) => {
+    if (!found && node instanceof FlexLayout.TabNode && node.getConfig()?.moduleId === m.id) {
+      found = node;
+    }
+  });
+  if (found) {
+    showTab(found.getId());
+    return;
+  }
   const preferred = m.kind === "bible" ? "main" : "side";
   const target =
     model.getNodeById(preferred)?.getId() ?? model.getActiveTabset()?.getId();
@@ -76,6 +86,16 @@ export function openModuleTab(m: ModuleMeta) {
       -1
     )
   );
+}
+
+/** Muestra la Biblia incluida (RVR1960), o un módulo de Biblia importado, sin duplicar pestañas. */
+export function focusBibleVersion(sourceId: string, modules: ModuleMeta[]) {
+  if (!sourceId) {
+    showTab("bible-main");
+    return;
+  }
+  const m = modules.find((x) => x.id === sourceId);
+  if (m) openModuleTab(m);
 }
 
 /** Muestra una pestaña por id (p. ej. "bible-main" o "search-main"). */

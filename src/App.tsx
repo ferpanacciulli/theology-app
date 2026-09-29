@@ -1,5 +1,6 @@
 import Topbar from "./components/Topbar";
 import ModuleBar from "./components/ModuleBar";
+import ChapterBar from "./components/ChapterBar";
 import Workspace from "./components/Workspace";
 import MobileShell from "./components/MobileShell";
 import VerseOfDay from "./components/VerseOfDay";
@@ -42,6 +43,7 @@ function App() {
         <Topbar />
       </div>
       <VerseOfDay />
+      <ChapterBar />
 
       <ModuleBar />
 

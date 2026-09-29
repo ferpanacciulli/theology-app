@@ -10,7 +10,7 @@ import { model, persistModel } from "./layoutModel";
 function factory(node: FlexLayout.TabNode) {
   const component = node.getComponent();
 
-  if (component === "bible") return <BibleView node={node} />;
+  if (component === "bible") return <BibleView />;
   if (component === "commentary") return <CommentaryPanel node={node} />;
   if (component === "search") return <SearchView />;
   if (component === "module") {

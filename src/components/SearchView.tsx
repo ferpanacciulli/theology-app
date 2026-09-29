@@ -61,6 +61,7 @@ function SearchView() {
   const setReference = useStudyStore((s) => s.setReference);
   const setMobileTab = useStudyStore((s) => s.setMobileTab);
   const searchFocus = useStudyStore((s) => s.searchFocus);
+  const searchRequest = useStudyStore((s) => s.searchRequest);
   const isMobile = useIsMobile();
   const bibles = modules.filter((m) => m.kind === "bible");
 
@@ -81,6 +82,14 @@ function SearchView() {
   useEffect(() => {
     if (searchFocus > 0) input.current?.focus();
   }, [searchFocus]);
+
+  useEffect(() => {
+    if (searchRequest.n > 0) {
+      setQuery(searchRequest.q);
+      input.current?.focus();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchRequest.n]);
 
   useEffect(() => {
     const t = setTimeout(() => {

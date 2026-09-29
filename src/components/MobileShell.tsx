@@ -9,6 +9,7 @@ import SearchView from "./SearchView";
 import HighlightsView from "./HighlightsView";
 import PlansView from "./PlansView";
 import VerseOfDay from "./VerseOfDay";
+import ChapterBar from "./ChapterBar";
 
 const TABS: { id: MobileTab; label: string; icon: string }[] = [
   { id: "bible", label: "Biblia", icon: "📖" },
@@ -30,6 +31,7 @@ function MobileShell() {
       <div className="shrink-0">
         <Topbar />
         <VerseOfDay />
+        {tab === "bible" && <ChapterBar />}
       </div>
 
       <div className="flex-1 overflow-hidden">
