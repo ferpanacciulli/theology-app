@@ -4,6 +4,7 @@ import type { Theme } from "../theme";
 import { useStudyStore } from "../store/useStudyStore";
 import { showTab } from "./layoutModel";
 import AuthPanel from "./AuthPanel";
+import FontSizeControl from "./FontSizeControl";
 
 interface InstallEvent extends Event {
   prompt: () => Promise<void>;
@@ -60,6 +61,7 @@ function Topbar() {
           {theme === "dark" ? "☀️" : "🌙"}
           <span className="hidden md:inline">{theme === "dark" ? " Claro" : " Oscuro"}</span>
         </button>
+        <FontSizeControl />
         <AuthPanel />
       </div>
     </div>

@@ -123,8 +123,11 @@ function BibleView({ moduleId }: { moduleId?: string }) {
                 verseRefs.current[v.Verse] = el;
               }}
               onClick={() => onVerseClick(v.Verse)}
-              style={{ backgroundColor: colorTint(highlight?.color, 0.26) }}
-              className={`font-serif leading-8 text-[1.15rem] cursor-pointer rounded-lg px-3 py-0.5 transition-colors select-text ${
+              style={{
+                backgroundColor: colorTint(highlight?.color, 0.26),
+                fontSize: "calc(1.15rem * var(--reading-scale, 1))",
+              }}
+              className={`font-serif leading-8 cursor-pointer rounded-lg px-3 py-0.5 transition-colors select-text ${
                 selected ? "ring-1 ring-sky-500" : "hover:bg-zinc-800/60"
               }`}
             >
