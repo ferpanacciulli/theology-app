@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { supabase, isSupabaseConfigured } from "../lib/supabase";
+import { createRecoveryCode, resetPasswordWithCode } from "../lib/recovery";
 import { useAuthStore } from "../store/useAuthStore";
 
 type Mode = "signin" | "signup" | "forgot";
@@ -15,6 +16,9 @@ function AuthPanel() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [recoveryCode, setRecoveryCode] = useState("");
+  /** Código de recuperación de la cuenta abierta, para mostrarlo una vez. */
+  const [myCode, setMyCode] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [message, setMessage] = useState("");
   const boxRef = useRef<HTMLDivElement>(null);
@@ -35,6 +39,23 @@ function AuthPanel() {
     setMessage("");
   }
 
+  /** Muestra (o regenera) el código de recuperación de la cuenta abierta. */
+  async function showMyCode() {
+    if (!session) return;
+    setStatus("sending");
+    setMessage("");
+    const code = await createRecoveryCode(session.user.id);
+    if (!code) {
+      setStatus("error");
+      setMessage(
+        "No se pudo guardar el código. Corré supabase/schema.sql en el SQL Editor de Supabase (falta la tabla recovery_codes)."
+      );
+      return;
+    }
+    setMyCode(code);
+    setStatus("idle");
+  }
+
   async function submit(e: FormEvent) {
     e.preventDefault();
     if (!supabase) return;
@@ -42,15 +63,14 @@ function AuthPanel() {
     setMessage("");
 
     if (mode === "forgot") {
-      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-        redirectTo: window.location.origin,
-      });
-      if (error) {
-        setStatus("error");
-        setMessage(error.message);
-      } else {
-        setStatus("sent");
-        setMessage("Te mandamos un correo con un enlace para elegir una contraseña nueva.");
+      // Sin correo: se verifica el código de recuperación de la cuenta.
+      const res = await resetPasswordWithCode(email.trim(), recoveryCode, newPassword);
+      setStatus(res.ok ? "sent" : "error");
+      setMessage(res.message);
+      if (res.ok) {
+        setRecoveryCode("");
+        setNewPassword("");
+        setMode("signin");
       }
       return;
     }
@@ -70,10 +90,18 @@ function AuthPanel() {
     }
     if (mode === "signup" && !data.session) {
       setStatus("sent");
-      setMessage("Te mandamos un correo para confirmar tu cuenta. Tocá el enlace y ya vas a poder entrar.");
+      setMessage(
+        "Tu cuenta quedó creada, pero falta confirmarla por correo. Apenas lo hagas, entrá y generá tu código de recuperación."
+      );
       return;
     }
     setStatus("idle");
+    // Al crear la cuenta se muestra de entrada el código de recuperación, que es
+    // la única forma de recuperar la contraseña (esta app no manda correos).
+    if (mode === "signup" && data.user) {
+      const code = await createRecoveryCode(data.user.id);
+      if (code) setMyCode(code);
+    }
     setOpen(false);
     setEmail("");
     setPassword("");
@@ -156,7 +184,7 @@ function AuthPanel() {
                 {mode === "signup"
                   ? "Creá tu cuenta para que tu posición y tus paneles te sigan a otros dispositivos."
                   : mode === "forgot"
-                  ? "Te mandamos un enlace para elegir una contraseña nueva."
+                  ? "Escribí tu correo, el código de recuperación que guardaste y la contraseña nueva."
                   : "Ingresá para que tu posición y tus paneles te sigan a otros dispositivos."}
               </p>
               <input
@@ -167,6 +195,28 @@ function AuthPanel() {
                 placeholder="tu@correo.com"
                 className={field}
               />
+              {mode === "forgot" && (
+                <>
+                  <input
+                    required
+                    value={recoveryCode}
+                    onChange={(e) => setRecoveryCode(e.target.value)}
+                    placeholder="Código de recuperación (XXXX-XXXX-XXXX)"
+                    autoCapitalize="characters"
+                    spellCheck={false}
+                    className={`${field} font-mono tracking-wider`}
+                  />
+                  <input
+                    type="password"
+                    required
+                    minLength={6}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Contraseña nueva"
+                    className={field}
+                  />
+                </>
+              )}
               {mode !== "forgot" && (
                 <input
                   type="password"
@@ -184,7 +234,7 @@ function AuthPanel() {
                   : mode === "signup"
                   ? "Crear cuenta"
                   : mode === "forgot"
-                  ? "Enviar enlace"
+                  ? "Cambiar contraseña"
                   : "Ingresar"}
               </button>
               {status === "sent" && <p className="text-emerald-400 mt-2">{message}</p>}
@@ -218,6 +268,44 @@ function AuthPanel() {
                 Tu posición y tus paneles se guardan en tu cuenta. Los módulos que importaste quedan
                 solo en este dispositivo.
               </p>
+
+              <div className="bg-zinc-800/60 rounded-lg p-3 mb-3">
+                <p className="text-zinc-300 mb-1">Código de recuperación</p>
+                {myCode ? (
+                  <>
+                    <p className="font-mono text-lg tracking-wider text-emerald-400 select-all break-all">
+                      {myCode}
+                    </p>
+                    <p className="text-zinc-500 mt-2 leading-5">
+                      Guardalo ahora: es lo único que sirve para recuperar la contraseña si la
+                      olvidás, porque esta app no manda correos. Cada vez que lo regeneres, el
+                      anterior deja de funcionar.
+                    </p>
+                    <button
+                      onClick={() => navigator.clipboard?.writeText(myCode)}
+                      className={`mt-2 ${btn}`}
+                    >
+                      📋 Copiar
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-zinc-500 mb-2 leading-5">
+                      Si olvidás la contraseña, entrás con este código. Generalo una vez y guardalo
+                      en un lugar seguro.
+                    </p>
+                    <button
+                      onClick={showMyCode}
+                      disabled={status === "sending"}
+                      className={`w-full ${btn}`}
+                    >
+                      {status === "sending" ? "Generando…" : "Generar código"}
+                    </button>
+                  </>
+                )}
+                {status === "error" && <p className="text-red-400 mt-2">{message}</p>}
+              </div>
+
               <button onClick={signOut} className={`w-full ${btn}`}>
                 Cerrar sesión
               </button>

@@ -47,7 +47,33 @@ publicar la app (y `http://localhost:5173` mientras desarrollas) a
 **Redirect URLs**, o el enlace de "olvidé mi contraseña" no va a volver a
 la app.
 
-## 5. Probar
+## 5. Recuperar la contraseña (sin correo)
+
+El plan gratis de Supabase **no manda correos**: su SMTP interno solo entrega a
+los miembros del proyecto, y configurar uno externo (Resend, Brevo, Mailgun…)
+pide una cuenta y, en algunos casos, un dominio. Vercel tampoco envía correos.
+
+Por eso la app no usa "enlace por correo" sino un **código de recuperación**:
+
+1. Entrá a tu cuenta y tocá **Generar código**. Sale algo como
+   `K7QM-3XPA-9HTB`. Copiálo y guardalo (en un nota del teléfono, en un
+   password manager, en un papel... lo que sea).
+2. Si algún día olvidás la contraseña, tocá **Olvidé mi contraseña**, escribí
+   tu correo + ese código, y elegí una contraseña nueva. Listo.
+3. Podés regenerar el código cuando quieras desde tu cuenta. El anterior deja
+   de servir, así que generá uno nuevo solo si todavía tenés el viejo guardado.
+
+Nada de esto necesita contratar nada ni usar tu Gmail. La tabla
+`recovery_codes` guarda **solo el SHA-256** del código (nunca el código en
+claro) y la función `reset_password_with_code` es la que cambia la contraseña
+en `auth.users` después de verificarlo. Todo eso lo crea la última parte de
+`supabase/schema.sql`.
+
+> Si al tocar "Olvidé mi contraseña" aparece un aviso de que la función no
+> existe, es que falta correr `supabase/schema.sql` (se puede volver a correr
+> entero, no rompe nada).
+
+## 6. Probar
 
 `npm run dev`, y en la esquina superior derecha aparece un botón para crear
 una cuenta o ingresar con correo y contraseña. Al iniciar sesión en un

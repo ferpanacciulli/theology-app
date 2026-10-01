@@ -7,15 +7,21 @@ import { renderMarkup } from "../modules/esword/markup";
 import { colorTint } from "../notes/colors";
 import { verseKey } from "../notes/localHighlights";
 import { useHighlightStore } from "../store/useHighlightStore";
+import { useIsMobile } from "../useIsMobile";
 import HighlightButton from "./HighlightButton";
 import Diagnostics from "./Diagnostics";
 import EncryptedNotice from "./EncryptedNotice";
 
-/** Muestra un capítulo. `moduleId` fija la versión de esta pestaña (vacío = RVR1960 incluida). */
+/** Muestra un capítulo. `moduleId` fija la versión de esta pestaña (vacío = la elegida por la persona). */
 function BibleView({ moduleId }: { moduleId?: string }) {
-  const { book, chapter, verse, selection, setReference, setSelection, setActiveSource, setLookup } =
-    useStudyStore();
-  const source = moduleId ?? "";
+  const {
+    book, chapter, verse, selection, setReference, setSelection, setActiveSource, setLookup,
+    bibleSource,
+  } = useStudyStore();
+  const isMobile = useIsMobile();
+  // En el celular no hay pestañas: la Biblia principal muestra la versión elegida
+  // en la barra de arriba (igual que en escritorio la pestaña "RVR1960").
+  const source = moduleId ?? (isMobile ? bibleSource : "");
   const { verses: currentVerses, db, error, encrypted, loading } = useChapterVerses(source, book, chapter);
   const highlights = useHighlightStore((s) => s.entries);
   const containerRef = useRef<HTMLDivElement | null>(null);

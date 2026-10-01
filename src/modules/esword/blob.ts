@@ -1,4 +1,5 @@
 import { unzlibSync } from "fflate";
+import { decodeEntities } from "./entities";
 
 const utf8 = new TextDecoder("utf-8", { fatal: true });
 const cp1252 = new TextDecoder("windows-1252");
@@ -18,20 +19,20 @@ function decode(d: Uint8Array): string {
  */
 export function blobToText(v: unknown): string | null {
   if (v == null) return "";
-  if (typeof v === "string") return v;
-  if (!(v instanceof Uint8Array)) return String(v);
+  if (typeof v === "string") return decodeEntities(v);
+  if (!(v instanceof Uint8Array)) return decodeEntities(String(v));
 
   if (v.length > 5 && v[4] === 0x78) {
     try {
       const d = unzlibSync(v.subarray(4));
       const n = new DataView(v.buffer, v.byteOffset, v.byteLength).getUint32(0, true);
-      if (d.length === n) return decode(d);
+      if (d.length === n) return decodeEntities(decode(d));
     } catch {
       /* no era zlib */
     }
   }
   try {
-    return utf8.decode(v);
+    return decodeEntities(utf8.decode(v));
   } catch {
     return null;
   }

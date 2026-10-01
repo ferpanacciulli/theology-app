@@ -3,6 +3,7 @@ import type { Database, SqlJsStatic } from "sql.js";
 import wasmUrl from "sql.js/dist/sql-wasm.wasm?url";
 import type { ModuleKind } from "../types";
 import { blobToText } from "./blob";
+import { decodeEntities } from "./entities";
 
 let sqlPromise: Promise<SqlJsStatic> | null = null;
 
@@ -56,7 +57,7 @@ export function readDetails(db: Database): { title: string; abbreviation: string
       db,
       `SELECT ${t ? `"${t}"` : "''"} AS t, ${a ? `"${a}"` : "''"} AS a FROM Details LIMIT 1`
     );
-    return { title: d?.t ?? "", abbreviation: d?.a ?? "" };
+    return { title: decodeEntities(d?.t ?? ""), abbreviation: decodeEntities(d?.a ?? "") };
   } catch {
     return { title: "", abbreviation: "" };
   }
@@ -248,7 +249,7 @@ export function searchWords(db: Database, prefix: string, limit = 200): string[]
     db,
     `SELECT "${s.word}" AS w FROM "${s.table}" WHERE "${s.word}" LIKE ? ORDER BY "${s.word}" LIMIT ${limit}`,
     [`${prefix}%`]
-  ).map((r) => r.w);
+  ).map((r) => decodeEntities(r.w));
 }
 
 export function getDefinition(db: Database, word: string): string | null {
@@ -300,7 +301,7 @@ export function listEntries(db: Database, l: EntryLayout): { id: number; title: 
   return all<{ id: number; title: unknown }>(
     db,
     `SELECT rowid AS id, ${l.title} AS title FROM "${l.table}" ORDER BY rowid`
-  ).map((r) => ({ id: r.id, title: String(r.title ?? "").trim() || `#${r.id}` }));
+  ).map((r) => ({ id: r.id, title: decodeEntities(String(r.title ?? "").trim()) || `#${r.id}` }));
 }
 
 export function getEntry(

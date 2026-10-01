@@ -1,9 +1,11 @@
 import type { ReactNode } from "react";
 import { hexToDataUrl } from "./blob";
+import { decodeEntities } from "./entities";
 
 /** Texto plano (para vistas de depuración). */
 export function rtfToText(s: string): string {
-  return s
+  return decodeEntities(
+    s
     .replace(/\{\\\*[^{}]*\}/g, "")
     .replace(/\\par[d]?\b ?|\\line ?/g, "\n")
     .replace(/\\'([0-9a-fA-F]{2})/g, (_, h: string) => String.fromCharCode(parseInt(h, 16)))
@@ -13,7 +15,8 @@ export function rtfToText(s: string): string {
     .replace(/\\[a-zA-Z]+-?\d* ?/g, "")
     .replace(/[{}]/g, "")
     .replace(/<\/?[A-Za-z]{1,6}\d*>/g, "")
-    .trim();
+    .trim()
+  );
 }
 
 const TOKEN =
@@ -40,7 +43,9 @@ interface PictState {
  */
 export function renderMarkup(text: string, onStrong?: (code: string) => void): ReactNode[] {
   const isRtf = text.trimStart().startsWith("{\\rtf");
-  const src = isRtf ? text.replace(/[\r\n]+/g, "") : text;
+  // Algunos módulos (comentarios, sobre todo) traen el texto escapado con
+  // entidades HTML (&nbsp;, &uacute;, &hellip;): se convierten antes de procesar.
+  const src = isRtf ? text.replace(/[\r\n]+/g, "") : decodeEntities(text);
 
   const out: ReactNode[] = [];
   let italic = false;

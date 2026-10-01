@@ -14,25 +14,28 @@ import ShareVerseButton from "./ShareVerseButton";
 /** Todos los controles de lectura: navegar, elegir versión, buscar, escuchar y compartir. */
 function ChapterBar() {
   const {
-    book, chapter, verse, selection, activeSource, modules,
-    setReference, setActiveSource, requestSearch, setMobileTab, setCurrentVerse,
+    book, chapter, verse, selection, activeSource, bibleSource, modules,
+    setReference, setActiveSource, setBibleSource, requestSearch, setMobileTab, setCurrentVerse,
   } = useStudyStore();
   const isMobile = useIsMobile();
   const [query, setQuery] = useState("");
   const [pickerOpen, setPickerOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const bibles = modules.filter((m) => m.kind === "bible");
-  const { verses } = useChapterVerses(activeSource, book, chapter);
+  // En el celular la versión elegida manda sobre la Biblia principal (no hay
+  // pestañas), así que es la que se ve arriba y la que se lee.
+  const currentSource = isMobile ? bibleSource || activeSource : activeSource;
+  const { verses } = useChapterVerses(currentSource, book, chapter);
 
   const plainVerses = useMemo(
     () => verses.map((v) => ({ verse: v.Verse, text: rtfToText(v.Scripture) })),
     [verses]
   );
   const versionLabel = useMemo(() => {
-    if (!activeSource) return "RVR1960";
-    const m = bibles.find((b) => b.id === activeSource);
+    if (!currentSource) return "RVR1960";
+    const m = bibles.find((b) => b.id === currentSource);
     return m?.abbreviation || m?.title || "Biblia";
-  }, [activeSource, bibles]);
+  }, [currentSource, bibles]);
   const bookName = books.find((b) => b.id === book)?.name ?? "";
   const effectiveSelection = selection.length ? selection : [verse];
 
@@ -101,15 +104,24 @@ function ChapterBar() {
       ))}
     </select>
   );
+  function changeVersion(id: string) {
+    setActiveSource(id);
+    if (isMobile) {
+      // En el celular la Biblia principal cambia de versión en el lugar
+      // (no hay pestañas donde abrir un módulo nuevo).
+      setBibleSource(id);
+      setMobileTab("bible");
+    } else {
+      focusBibleVersion(id, modules);
+    }
+  }
+
   const versionSelect = (
     <select
-      value={activeSource}
-      onChange={(e) => {
-        setActiveSource(e.target.value);
-        focusBibleVersion(e.target.value, modules);
-      }}
-      className={field}
-      title="Versión que se escucha y se comparte"
+      value={currentSource}
+      onChange={(e) => changeVersion(e.target.value)}
+      className={`${field} ${isMobile ? "max-w-[9.5rem] text-sm py-2" : ""}`}
+      title="Versión que se lee, se escucha y se comparte"
     >
       <option value="">RVR1960</option>
       {bibles.map((m) => (
@@ -122,7 +134,7 @@ function ChapterBar() {
       allVerses={plainVerses}
       selection={effectiveSelection}
       onVerseStart={(v) => setCurrentVerse(v)}
-      resetKey={`${activeSource}:${book}:${chapter}`}
+      resetKey={`${currentSource}:${book}:${chapter}`}
     />
   );
   const share = (
@@ -142,10 +154,12 @@ function ChapterBar() {
           <button onClick={previousChapter} className={iconBtn}>←</button>
           <button
             onClick={() => { setPickerOpen((v) => !v); setMenuOpen(false); }}
-            className="flex-1 min-w-0 text-center px-2 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 truncate"
+            className="px-2 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 truncate max-w-[7.5rem]"
           >
             {bookName} {chapter} ▾
           </button>
+          {versionSelect}
+          <div className="flex-1" />
           <button onClick={nextChapter} className={iconBtn}>→</button>
           <button onClick={goToSearch} className={iconBtn} title="Buscar">🔍</button>
           <button
@@ -166,9 +180,6 @@ function ChapterBar() {
 
         {menuOpen && (
           <div className="px-2 pb-3 pt-1 border-t border-zinc-800 flex flex-col gap-2">
-            <div className="flex gap-2 flex-wrap items-center">
-              {versionSelect}
-            </div>
             <div className="flex gap-1.5 flex-wrap items-center">{speech}</div>
             {share}
           </div>
