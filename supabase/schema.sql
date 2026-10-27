@@ -134,4 +134,44 @@ end;
 $$;
 
 revoke all on function public.reset_password_with_code(text, text, text) from public;
+-- ##########################################################################
+-- keep_alive: Función para mantener la base de datos de Supabase viva
+-- ##########################################################################
+
+-- Tabla keep_alive
+create table if not exists public.keep_alive (
+  id          uuid primary key default gen_random_uuid(),
+  date        timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+
+alter table public.keep_alive enable row level security;
+
+-- Policy: cualquier usuario puede leer (para verificar que funciona)
+drop policy if exists "select_any" on public.keep_alive;
+create policy "select_any" on public.keep_alive
+  for select using (true);
+
+-- Policy: solo authenticated puede escribir
+drop policy if exists "insert_own" on public.keep_alive;
+create policy "insert_own" on public.keep_alive
+  for all using (auth.role() = 'authenticated');
+
+-- Función RPC keep_alive: escribe la fecha actual en la tabla
+create or replace function public.keep_alive()
+returns void
+language plpgsql
+as $$
+begin
+  insert into public.keep_alive (date, updated_at)
+    values (now(), now())
+    on conflict do update
+    set date = now(), updated_at = now();
+end;
+$$;
+
+-- Otorgar permisos para que la función sea ejecutable por anon (edge functions)
+grant execute on function public.keep_alive() to anon, authenticated;
+
+
 grant execute on function public.reset_password_with_code(text, text, text) to anon, authenticated;

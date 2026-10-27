@@ -95,3 +95,84 @@ como los tenías.
 Si ya habías corrido `supabase/schema.sql` antes, volvé a correrlo entero:
 se puede ejecutar las veces que quieras sin romper nada, y esta vez agrega
 la tabla de subrayados y la columna para los nombres de los colores.
+## 7. keep_alive: Mantener la base de datos de Supabase activa
+
+El plan gratuito de Supabase "duerme" la base de datos después de un tiempo
+de inactividad. Para evitar esto y mantenerla activa, se implementó esta
+solución:
+
+### 7.1. Tabla y función SQL (ya creados en `supabase/schema.sql`)
+
+Se creó:
+- Tabla `public.keep_alive` con campos: `id`, `date`, `updated_at`.
+- Función RPC `public.keep_alive()` que escribe la fecha actual
+  (`now()`) en la tabla `keep_alive`, usando `on conflict do update`
+  para evitar duplicados.
+
+### 7.2. Edge Function
+
+Se creó un edge function en `supabase/functions/keep_alive/index.ts` que
+recibe una petición POST y llama a la función RPC `public.keep_alive()`.
+
+El endpoint es:
+```
+POST https://TU-PROYECTO.supabase.co/functions/v1/keep-alive
+```
+
+### 7.3. Configurar la ejecución diaria a las 00:00
+
+#### Opción A: En tu propia máquina (recomendada y más fiable)
+
+1. Copia el archivo `keep_alive.js` a tu computadora.
+2. Asegúrate de tener Node.js instalado.
+3. Edita el archivo para poner tu URL y clave de Supabase
+   (o configura las variables de entorno).
+4. Agrega un cron job:
+
+   **En Linux/Mac (crontab):**
+   ```bash
+   crontab -e
+   # Agregar esta línea:
+   0 0 * * * /usr/bin/node /ruta/completa/keep_alive.js >> /ruta/completa/keep_alive.log 2>&1
+   ```
+
+   **En Windows (Tareas del Sistema):**
+   - Abre "Tareas del Sistema" (Task Scheduler)
+   - Crea tarea básica
+   - Acción: `node C:\ruta\al\keep_alive.js`
+   - Trigger: Diaria a las 00:00
+
+#### Opción B: Cron job en servidores/heroku
+
+Si tienes un servidor o una app que siempre esté activa:
+```javascript
+// keep_alive.js
+const fetch = require('node-fetch');
+const url = 'https://TU-PROYECTO.supabase.co/functions/v1/keep-alive';
+
+setInterval(async () => {
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'apikey': process.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+        'Authorization': `Bearer ${process.env.VITE_SUPABASE_PUBLISHABLE_KEY}`
+      }
+    });
+    console.log('keep_alive ejecutado:', new Date().toISOString());
+  } catch (err) {
+    console.error('Error:', err);
+  }
+}, 24 * 60 * 60 * 1000); // 24 horas
+```
+
+### 7.4. Verificar que funciona
+
+1. Ve a Supabase → **SQL Editor**
+2. Ejecuta: `SELECT * FROM public.keep_alive ORDER BY date DESC LIMIT 5;`
+3. Deberías ver registros con la fecha actual.
+
+Puedes ver y eliminar los registros antiguos con:
+```sql
+DELETE FROM public.keep_alive WHERE date < now() - interval '7 days';
+```
