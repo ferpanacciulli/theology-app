@@ -1,0 +1,18 @@
+{
+  "functions": {
+    "api/keep-alive.js": {
+      "runtime": "nodejs18.x"
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/keep-alive",
+      "schedule": "0 0 * * *"
+    }
+  ],
+  "env": {
+    "SUPABASE_URL": "@SUPABASE_URL",
+    "SUPABASE_PUBLISHABLE_KEY": "@SUPABASE_PUBLISHABLE_KEY"
+  }
+}
+
